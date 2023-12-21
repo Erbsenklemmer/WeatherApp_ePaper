@@ -18,7 +18,7 @@ public:
 
     void clear();
 
-    char m_timezone_offset_in_hours;
+    signed char m_timezone_offset_in_half_hours;
 
     bool m_currentReadEnable;
 

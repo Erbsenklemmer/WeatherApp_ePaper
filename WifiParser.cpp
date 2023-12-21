@@ -1,6 +1,7 @@
 #include "core_esp8266_features.h"
 #include "GlobalSettings.h"
 
+#include "JsonStreamingParser.h"
 #include "WifiParser.h"
 
 uint lastTime = millis();
@@ -23,8 +24,9 @@ bool WifiParser::setup()
   return true;
 }
 
-bool WifiParser::parse()
+bool WifiParser::parse(JsonStreamingParser* pParser)
 {
+  bool ok(true);
   // String oneCallWheaterRequest = String("http://api.openweathermap.org/data/3.0/onecall")
   //         + "?lat=" + lat + "&lon=" + lon + "&appid=" + appid + "&units=" + units + "&lang=" + lang;
 
@@ -38,7 +40,7 @@ bool WifiParser::parse()
     // Check WiFi connection status
     if(WiFi.status()== WL_CONNECTED)
     {    
-      httpGETRequest(oneCallWheaterRequest.c_str());
+      ok = httpGETRequest(oneCallWheaterRequest.c_str(), pParser);
       //Serial.println(jsonBuffer);
     }
     else 
@@ -48,10 +50,10 @@ bool WifiParser::parse()
     lastTime = millis();
   }
 
-  return true;
+  return ok;
 }
 
-bool WifiParser::httpGETRequest(const char* serverName) 
+bool WifiParser::httpGETRequest(const char* szRequest, JsonStreamingParser* pParser) 
 {
   bool ok(true);
 
@@ -59,7 +61,7 @@ bool WifiParser::httpGETRequest(const char* serverName)
   HTTPClient http;
     
   // Your Domain name with URL path or IP address with path
-  http.begin(client, serverName);
+  http.begin(client, szRequest);
   
   // Send HTTP POST request
   int httpResponseCode = http.GET();
@@ -80,6 +82,7 @@ bool WifiParser::httpGETRequest(const char* serverName)
     {
       char c = pClientStream->read();
       Serial.print(c);
+      pParser->parse(c);
 
       yield();//give the stream a chance to read the next character
     }

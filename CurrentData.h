@@ -8,5 +8,12 @@ public:
     void clear();
 
     int m_dateTime;
+
+    float m_temp;
+    float m_tempFeelsLike;
+
+    float m_windSpeed;
+    float m_windDeg;
+    float m_windGust;
 };
 

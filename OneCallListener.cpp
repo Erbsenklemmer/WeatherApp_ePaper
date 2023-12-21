@@ -66,7 +66,7 @@ void OneCallListener::value(String value) {
 
     if (m_lastKeyName == "timezone_offset")
     {
-        m_data.m_timezone_offset_in_hours = char(value.toInt() / 3600);
+        m_data.m_timezone_offset_in_half_hours = (signed char)(value.toInt() / 1800);
     }
 
     if (m_data.m_currentReadEnable == true)

@@ -11,7 +11,7 @@ OneCallData::~OneCallData()
 
 void OneCallData::clear()
 {
-    m_timezone_offset_in_hours = 0;
+    m_timezone_offset_in_half_hours = 0;
 
     m_currentReadEnable = false;
 

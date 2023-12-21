@@ -6,13 +6,15 @@
 //#include <WiFi.h>
 //#include <HTTPClient.h>
 
+class JsonStreamingParser;
+
 class WifiParser
 {
 public:
   static bool setup();
 
-  static bool parse();
+  static bool parse(JsonStreamingParser* pParser);
 
 private:
-  bool static httpGETRequest(const char* serverName);
+  bool static httpGETRequest(const char* szRequest, JsonStreamingParser* pParser);
 };
