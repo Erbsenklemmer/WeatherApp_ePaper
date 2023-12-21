@@ -28,7 +28,7 @@ void loop()
   //CurrentData *pCurrentData = &oneCallListener.m_data.m_currentData;
   
   //unixTime.getDateTime(pCurrentData->m_dateTime);
-  unixTime.getDateTime(oneCallListener.m_data.m_currentData);
+  unixTime.getDateTime(oneCallListener.m_data.m_currentData.m_dateTime);
 
   String dateTime = String(unixTime.hour) + ":" + String(unixTime.minute) + ":"  + String(unixTime.month) + "." + unixTime.month/*monthNames[unixTime.month-1]*/ + " " + String(unixTime.year);
   Serial.println(dateTime);
