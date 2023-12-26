@@ -89,14 +89,14 @@ void OneCallListener::value(String value) {
                 ReadHourlyWeater(value);
             }
         }
-        else if (m_arrayDepth == 1 && m_stackObjectName[m_objectDepth - 1] == "hourly" && m_stackObjectName[m_objectDepth] == "rain")
+        else if (m_arrayDepth == 0 && m_stackObjectName[m_objectDepth - 1] == "hourly" && m_stackObjectName[m_objectDepth] == "rain")
         {
             if (m_arrayDepth < m_stackSize)
             {
                 ReadHourlyRain(value);
             }
         }
-        else if (m_arrayDepth == 1 && m_stackObjectName[m_objectDepth - 1] == "hourly" && m_stackObjectName[m_objectDepth] == "snow")
+        else if (m_arrayDepth == 0 && m_stackObjectName[m_objectDepth - 1] == "hourly" && m_stackObjectName[m_objectDepth] == "snow")
         {
             if (m_arrayDepth < m_stackSize)
             {
@@ -279,6 +279,26 @@ void OneCallListener::ReadCurrent(const String& value)
     if (m_lastKeyName == "dt")
     {
         m_data.m_currentData.m_dateTime = value.toInt();
+    }
+    else if (m_lastKeyName == "temp")
+    {
+        m_data.m_currentData.m_temp = value.toFloat();
+    }
+    else if (m_lastKeyName == "feels_like")
+    {
+        m_data.m_currentData.m_tempFeelsLike = value.toFloat();
+    }
+    else if (m_lastKeyName == "wind_speed")
+    {
+        m_data.m_currentData.m_windSpeed = value.toFloat();
+    }
+    else if (m_lastKeyName == "wind_deg")
+    {
+        m_data.m_currentData.m_windDeg = value.toFloat();
+    }
+    else if (m_lastKeyName == "wind_gust")
+    {
+        m_data.m_currentData.m_windGust = value.toFloat();
     }
 }
 

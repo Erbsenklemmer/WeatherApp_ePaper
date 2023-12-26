@@ -23,6 +23,8 @@ void OneCallData::clear()
     m_dailyCountRaw = -1;
     m_dailyCount = -1;
 
+    m_currentData.clear();
+
     for (int i = 0; i < hourlyForeCasts; i++)
     {
         m_hourlyData[i].clear();
