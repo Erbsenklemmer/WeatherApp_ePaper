@@ -36,6 +36,8 @@ bool WifiParser::setup()
 
 bool WifiParser::parse(JsonStreamingParser* pParser)
 {
+  Serial.println("Start parsing...");
+  
   #ifdef __TEST__
     int i = 0;
     while (testResponse[i] != '\0')

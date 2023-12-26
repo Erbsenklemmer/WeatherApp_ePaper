@@ -29,8 +29,14 @@ void loop()
   JsonStreamingParser parser;
   parser.setListener(&oneCallListener);
 
-  Serial.println("Start parsing");
+#ifdef __Test_Paint_DailyData__
+   //memcpy(m_data.m_dailyData[m_data.m_dailyCount].m_weatherIcon, (void*)value.c_str(), sizeof(m_data.m_dailyData[m_data.m_dailyCount].m_weatherIcon));
+	 memcpy(oneCallListener.m_data.m_dailyData[0].m_weatherIcon, "02d", sizeof(oneCallListener.m_data.m_dailyData[0].m_weatherIcon));
+   memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "03d", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
+   memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "03n", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
+#else
   WifiParser::parse(&parser);
+#endif //__Test_Paint_DailyData__
 
   EPaperWeatherDrawer::drawOneCallData(oneCallListener.m_data);
 
