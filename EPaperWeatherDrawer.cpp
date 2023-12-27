@@ -1,3 +1,15 @@
+
+#include <Fonts/FreeMono9pt7b.h>
+#include <Fonts/FreeSans9pt7b.h>
+#include <Fonts/FreeMonoBold9pt7b.h>
+#include <Fonts/FreeSansBold9pt7b.h>
+#include <Fonts/FreeMonoBoldOblique9pt7b.h>
+#include <Fonts/FreeSansBoldOblique9pt7b.h>
+#include <Fonts/FreeSerifBold9pt7b.h>
+
+
+//more fonts: D:\Projekte\Arduino\libraries\Adafruit_GFX_Library\Fonts
+
 #include "EPaperWeatherDrawer.h"
 
 GxEPD2_3C<GxEPD2_420c, GxEPD2_420c::HEIGHT> display(GxEPD2_420c(D8, D3, D1, D2));
@@ -28,11 +40,11 @@ void EPaperWeatherDrawer::setup()
       drawDailyData(0, 200, oneCallData.m_dailyData[1]);
       drawDailyData(0, 300, oneCallData.m_dailyData[2]);
 
-      display.drawLine(100, 0, 100, 400, COLOR_FOREGROUND);
+      display.drawLine(100, 100, 100, 400, COLOR_FOREGROUND);
       
-      display.drawLine(0, 100, 100, 100, COLOR_RED);
-      display.drawLine(0, 200, 100, 200, COLOR_RED);
-      display.drawLine(0, 300, 100, 300, COLOR_RED);
+      display.drawLine(0, 100, 300, 100, COLOR_RED);
+      display.drawLine(0, 200, 300, 200, COLOR_RED);
+      display.drawLine(0, 300, 300, 300, COLOR_RED);
 #endif// __Test_Paint_DailyData__
 
     } 
@@ -44,6 +56,64 @@ void EPaperWeatherDrawer::setup()
   void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData)
   {
     DrawIcon(x, y, dailyData.m_weatherIcon);
+
+    const int margin = 2;
+
+    int startX = x + 100;
+    int startY = y;
+
+    //dtostrf display.set
+    display.setTextColor(COLOR_FOREGROUND);
+
+
+//////////////////////////////////
+    display.setFont(&FreeSans9pt7b);
+
+    display.setCursor(100,60);
+    display.print("FreeSans9pt7b");
+
+//////////////////////////////////
+    display.setFont(&FreeMono9pt7b);
+
+    display.setCursor(100,80);
+    display.print("FreeMono9pt7b");
+    
+//////////////////////////////////
+    display.setFont(&FreeSansBold9pt7b);
+
+    display.setCursor(100,100);
+    display.print("FreeSansBold9pt7b");
+
+//////////////////////////////////
+    display.setFont(&FreeMonoBold9pt7b);
+
+    display.setCursor(100,120);
+    display.print("FreeMonoBold9pt7b");
+    
+//////////////////////////////////
+    display.setFont(&FreeMonoBoldOblique9pt7b);
+
+    display.setCursor(100,140);
+    display.print("FreeMonoBoldOblique9pt7b");
+
+ //////////////////////////////////
+    display.setFont(&FreeSansBoldOblique9pt7b);
+
+    display.setCursor(100,160);
+    display.print("FreeSansBoldOblique9pt7b");
+
+//////////////////////////////////
+    display.setFont(&FreeSerifBold9pt7b);
+
+    display.setCursor(100,180);
+    display.print("FreeSerifBold9pt7b");
+
+ //////////////////////////////////
+    int16_t tbx, tby; 
+    uint16_t tbw, tbh;
+    display.getTextBounds(dailyData.m_weatherDescription, 0, 0, &tbx, &tby, &tbw, &tbh);
+
+    Serial.println(String("GxEPD2_420c::WIDTH: ") + GxEPD2_420c::WIDTH + String(", GxEPD2_420c::HEIGHT: ") + GxEPD2_420c::HEIGHT);
   }
 
   void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
@@ -143,7 +213,6 @@ void EPaperWeatherDrawer::DrawMediumMoonWithCloud(int offsetX, int offsetY)
 
 void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithSun(int offsetX, int offsetY) 
 {
-  offsetY+10;
   Serial.println("DrawBlackAndWhiteCloudWithSun at: " + String(offsetX) + ", " + offsetY);
   DrawSmallSun(offsetX+10, offsetY+9);
   DrawBlackAndWhiteCloud(offsetX, offsetY);

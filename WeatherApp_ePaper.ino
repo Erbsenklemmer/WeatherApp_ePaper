@@ -42,6 +42,10 @@ void loop()
       break;
     case 1:
       memcpy(oneCallListener.m_data.m_dailyData[0].m_weatherIcon, "02n", sizeof(oneCallListener.m_data.m_dailyData[0].m_weatherIcon));
+      oneCallListener.m_data.m_dailyData[0].m_tempDay = 10.26;
+      oneCallListener.m_data.m_dailyData[0].m_tempMin = -10.26;
+      oneCallListener.m_data.m_dailyData[0].m_tempMax = 88.88;
+      oneCallListener.m_data.m_dailyData[0].m_weatherDescription = "Überwiegend bewölkt";
       memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "03d", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
       memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "03n", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
       break;
@@ -58,9 +62,9 @@ void loop()
   }
 
   if (go >= 3)
-    go = 0;
-  else 
-    ++go;
+    go = 1;
+  // else 
+  //   ++go;
 
 #else
   WifiParser::parse(&parser);

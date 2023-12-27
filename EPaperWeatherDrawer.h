@@ -2,9 +2,10 @@
 
 #define ENABLE_GxEPD2_GFX 1
 
-#define __Test_Paint_DailyData__
-
 #include "GxEPD2_3C.h"
+
+
+#define __Test_Paint_DailyData__
 
 #include "OneCallData.h"
 #include "DailyData.h"
@@ -21,7 +22,7 @@ class EPaperWeatherDrawer
   protected:
     static void drawDailyData(int x, int y, const DailyData& dailyData);
 
-private:
+  private:
     static void DrawIcon(int x, int y, const String& crIcon);
 
     static void DrawSun(int x, int y);//01d
