@@ -6,8 +6,7 @@
 #include "HourlyData.h"
 #include "DailyData.h"
 
-//#define hourlyForeCasts 8
-#define hourlyForeCasts 24
+#define hourlyForeCasts 8
 #define dailyForeCasts 3
 
 class OneCallData

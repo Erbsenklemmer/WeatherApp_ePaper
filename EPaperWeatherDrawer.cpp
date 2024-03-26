@@ -1,16 +1,18 @@
 
-#include <Fonts/FreeMono9pt7b.h>
+//#include <Fonts/FreeMono9pt7b.h>
 #include <Fonts/FreeSans9pt7b.h>
-#include <Fonts/FreeMonoBold9pt7b.h>
+#include <Fonts/FreeSans12pt7b.h>
+#include <Fonts/FreeSans18pt7b.h>
+
 #include <Fonts/FreeSansBold9pt7b.h>
-#include <Fonts/FreeMonoBoldOblique9pt7b.h>
-#include <Fonts/FreeSansBoldOblique9pt7b.h>
-#include <Fonts/FreeSerifBold9pt7b.h>
+#include <Fonts/FreeSansBold12pt7b.h>
+#include <Fonts/FreeSansBold18pt7b.h>
 
 
 //more fonts: D:\Projekte\Arduino\libraries\Adafruit_GFX_Library\Fonts
 
 #include "EPaperWeatherDrawer.h"
+#include "UnicodeDrawer.h"
 
 GxEPD2_3C<GxEPD2_420c, GxEPD2_420c::HEIGHT> display(GxEPD2_420c(D8, D3, D1, D2));
 //GxEPD2_3C<GxEPD2_420c_Z21, GxEPD2_420c_Z21::HEIGHT> display(GxEPD2_420c_Z21(D8, D3, D1, D2));
@@ -21,154 +23,125 @@ const  int COLOR_RED = GxEPD_RED;
 
 void EPaperWeatherDrawer::setup()
 {
-  display.init(115200);
+  Serial.println("EPaperWeatherDrawer::setup() enter");
+
+  display.init();
 
   display.setRotation(1);
   display.setFullWindow();
+
+  //display.setUTF8Print(true);
+
+  Serial.println("EPaperWeatherDrawer::setup() leaving");
 }
 
-  void EPaperWeatherDrawer::drawOneCallData(const OneCallData& oneCallData)
+void EPaperWeatherDrawer::drawOneCallData(const OneCallData& oneCallData)
+{
+  // Serial.println("Drawing disabled!!!");
+  // return;
+
+  display.firstPage();
+  Serial.println(String("GxEPD2_420c::WIDTH: ") + GxEPD2_420c::WIDTH + String(", GxEPD2_420c::HEIGHT: ") + GxEPD2_420c::HEIGHT);
+
+  do 
   {
-    display.firstPage();
+    display.fillScreen(COLOR_BACKGROUND);
 
-    do 
-    {
-      display.fillScreen(COLOR_BACKGROUND);
+    drawDailyData(0, 100, oneCallData.m_dailyData[0]);
+    drawDailyData(0, 200, oneCallData.m_dailyData[1]);
+    drawDailyData(0, 300, oneCallData.m_dailyData[2]);
 
-#ifdef __Test_Paint_DailyData__
-      drawDailyData(0, 100, oneCallData.m_dailyData[0]);
-      drawDailyData(0, 200, oneCallData.m_dailyData[1]);
-      drawDailyData(0, 300, oneCallData.m_dailyData[2]);
+    display.drawLine(100, 100, 100, 400, COLOR_FOREGROUND);
+    
+    display.drawLine(0, 100, 300, 100, COLOR_RED);
+    display.drawLine(0, 200, 300, 200, COLOR_RED);
+    display.drawLine(0, 300, 300, 300, COLOR_RED);
+  } 
+  while(display.nextPage());
 
-      display.drawLine(100, 100, 100, 400, COLOR_FOREGROUND);
-      
-      display.drawLine(0, 100, 300, 100, COLOR_RED);
-      display.drawLine(0, 200, 300, 200, COLOR_RED);
-      display.drawLine(0, 300, 300, 300, COLOR_RED);
-#endif// __Test_Paint_DailyData__
+  display.hibernate();
+}
 
-    } 
-    while(display.nextPage());
+void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData)
+{
+  DrawIcon(x, y, dailyData.m_weatherIcon);
 
-    display.hibernate();
+  const int margin = 2;
+
+  int startX = x + 100;
+  int startY = y;
+
+  //dtostrf display.set
+  display.setTextColor(COLOR_FOREGROUND);
+  display.setFont(&FreeSans9pt7b);
+
+  int16_t tbx, tby; 
+  uint16_t tbw, tbh;
+
+  UnicodeDrawer unicodeDrawer(&display);
+  
+  String replace = unicodeDrawer.preUnicode(dailyData.m_weatherDescription);
+  display.getTextBounds(replace, 0, 0, &tbx, &tby, &tbw, &tbh);
+
+  display.setCursor(startX, startY + tbh);
+
+  unicodeDrawer.printUnicode(dailyData.m_weatherDescription, COLOR_FOREGROUND, COLOR_BACKGROUND, true);
+
+}
+
+void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
+{
+  Serial.println("drawing icon: " + crIcon + " at: " + x + ", " + y);
+
+  if (crIcon == "01d")
+    DrawSun(x, y);//01d;
+  else if (crIcon == "01n")    
+    DrawMoon(x, y);//01n;
+
+  else if (crIcon == "02d")
+    DrawMediumSunWithCloud(x, y);//02d
+  else if (crIcon == "02n")
+    DrawMediumMoonWithCloud(x, y);//02n
+
+  else if (crIcon == "03d")
+    DrawBlackAndWhiteCloudWithSun(x, y);//03d  
+  else if (crIcon == "03n")
+    DrawBlackAndWhiteCloudWithMoon(x, y);//03n
+
+  else if (crIcon == "04d")
+    DrawBlackAndWhiteCloud(x, y);//04d/n
+
+  else if (crIcon == "09d")
+    DrawMediumSunWithCloudAndRain(x, y);//09d  
+  else if (crIcon == "09n")
+    DrawMediumMoonWithCloudAndRain(x, y);//09n
+
+  else if (crIcon == "10d")
+    DrawRain(x, y);//10d  
+  else if (crIcon == "13d")
+    DrawSnow(x, y);//13d
+
+  else if (crIcon == "50d")
+      DrawFogg(x, y);//50d/n
   }
 
-  void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData)
+void EPaperWeatherDrawer::DrawSun(int offsetX, int offsetY) 
+{
+  int middleX = 50 + offsetX;  
+  int middleY = 50 + offsetY;
+
+  int length = 70;
+
+  display.drawLine(middleX-length/2, middleY, middleX+length/2, middleY, COLOR_FOREGROUND);//horz
+  display.drawLine(middleX, middleY-length/2, middleX, middleY+length/2, COLOR_FOREGROUND);//vert
+
+  for(int angle = 30; angle < 180; angle+=30) 
   {
-    DrawIcon(x, y, dailyData.m_weatherIcon);
-
-    const int margin = 2;
-
-    int startX = x + 100;
-    int startY = y;
-
-    //dtostrf display.set
-    display.setTextColor(COLOR_FOREGROUND);
-
-
-//////////////////////////////////
-    display.setFont(&FreeSans9pt7b);
-
-    display.setCursor(100,60);
-    display.print("FreeSans9pt7b");
-
-//////////////////////////////////
-    display.setFont(&FreeMono9pt7b);
-
-    display.setCursor(100,80);
-    display.print("FreeMono9pt7b");
+    if (angle == 90)
+      continue;
     
-//////////////////////////////////
-    display.setFont(&FreeSansBold9pt7b);
-
-    display.setCursor(100,100);
-    display.print("FreeSansBold9pt7b");
-
-//////////////////////////////////
-    display.setFont(&FreeMonoBold9pt7b);
-
-    display.setCursor(100,120);
-    display.print("FreeMonoBold9pt7b");
-    
-//////////////////////////////////
-    display.setFont(&FreeMonoBoldOblique9pt7b);
-
-    display.setCursor(100,140);
-    display.print("FreeMonoBoldOblique9pt7b");
-
- //////////////////////////////////
-    display.setFont(&FreeSansBoldOblique9pt7b);
-
-    display.setCursor(100,160);
-    display.print("FreeSansBoldOblique9pt7b");
-
-//////////////////////////////////
-    display.setFont(&FreeSerifBold9pt7b);
-
-    display.setCursor(100,180);
-    display.print("FreeSerifBold9pt7b");
-
- //////////////////////////////////
-    int16_t tbx, tby; 
-    uint16_t tbw, tbh;
-    display.getTextBounds(dailyData.m_weatherDescription, 0, 0, &tbx, &tby, &tbw, &tbh);
-
-    Serial.println(String("GxEPD2_420c::WIDTH: ") + GxEPD2_420c::WIDTH + String(", GxEPD2_420c::HEIGHT: ") + GxEPD2_420c::HEIGHT);
+    DrawPolarRay(middleX, middleY, length, angle);
   }
-
-  void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
-  {
-    Serial.println("drawing icon: " + crIcon + " at: " + x + ", " + y);
-
-    if (crIcon == "01d")
-      DrawSun(x, y);//01d;
-    else if (crIcon == "01n")    
-      DrawMoon(x, y);//01n;
-
-    else if (crIcon == "02d")
-      DrawMediumSunWithCloud(x, y);//02d
-    else if (crIcon == "02n")
-      DrawMediumMoonWithCloud(x, y);//02n
-
-    else if (crIcon == "03d")
-      DrawBlackAndWhiteCloudWithSun(x, y);//03d  
-    else if (crIcon == "03n")
-      DrawBlackAndWhiteCloudWithMoon(x, y);//03n
-
-    else if (crIcon == "04d")
-      DrawBlackAndWhiteCloud(x, y);//04d/n
-
-    else if (crIcon == "09d")
-      DrawMediumSunWithCloudAndRain(x, y);//09d  
-    else if (crIcon == "09n")
-      DrawMediumMoonWithCloudAndRain(x, y);//09n
-
-    else if (crIcon == "10d")
-      DrawRain(x, y);//10d  
-    else if (crIcon == "13d")
-      DrawSnow(x, y);//13d
-
-    else if (crIcon == "50d")
-       DrawFogg(x, y);//50d/n
-   }
-
-  void EPaperWeatherDrawer::DrawSun(int offsetX, int offsetY) 
-  {
-    int middleX = 50 + offsetX;  
-    int middleY = 50 + offsetY;
-
-    int length = 70;
-
-    display.drawLine(middleX-length/2, middleY, middleX+length/2, middleY, COLOR_FOREGROUND);//horz
-    display.drawLine(middleX, middleY-length/2, middleX, middleY+length/2, COLOR_FOREGROUND);//vert
-
-    for(int angle = 30; angle < 180; angle+=30) 
-    {
-      if (angle == 90)
-        continue;
-      
-      DrawPolarRay(middleX, middleY, length, angle);
-    }
 
   int radiusSun = 20;
   

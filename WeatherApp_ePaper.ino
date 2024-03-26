@@ -13,10 +13,31 @@ int go=1;
 void setup() 
 {
   Serial.begin(115200);
+  while (Serial.availableForWrite() <= 0)
+  {}
+
+// const char* ssid     = "Multipass Friends";
+// const char* password = "Willkommen";
+//   WiFi.begin(ssid, password);
+//   Serial.println("Connecting: " + String(ssid) + ", " + String(password));
+//   int i=0;
+//   while(WiFi.status() != WL_CONNECTED) {
+//     delay(500);
+//     Serial.print("." + String(++i));
+//   }
+
+//   Serial.println("");
+//   Serial.println("Wifi::status: " + String(WiFi.status()));
+//   Serial.print("Connected to WiFi network with IP Address: ");
+//   Serial.println(WiFi.localIP());
+
+  Serial.println("setup");
 
   WifiParser::setup();
 
   EPaperWeatherDrawer::setup();
+
+  Serial.println("setup");
 }
 
 void loop() 
@@ -36,28 +57,28 @@ void loop()
   switch (go)
   { 
     case 0:
-      memcpy(oneCallListener.m_data.m_dailyData[0].m_weatherIcon, "01d", sizeof(oneCallListener.m_data.m_dailyData[0].m_weatherIcon));
-      memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "01n", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
-      memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "02d", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[0].m_weatherIcon, "01d", sizeof(oneCallListener.m_data.m_dailyData[0].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "01n", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "02d", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
       break;
     case 1:
       memcpy(oneCallListener.m_data.m_dailyData[0].m_weatherIcon, "02n", sizeof(oneCallListener.m_data.m_dailyData[0].m_weatherIcon));
       oneCallListener.m_data.m_dailyData[0].m_tempDay = 10.26;
       oneCallListener.m_data.m_dailyData[0].m_tempMin = -10.26;
       oneCallListener.m_data.m_dailyData[0].m_tempMax = 88.88;
-      oneCallListener.m_data.m_dailyData[0].m_weatherDescription = "Überwiegend bewölkt";
-      memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "03d", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
-      memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "03n", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
+      oneCallListener.m_data.m_dailyData[0].m_weatherDescription = "Überwiegend bewölkt °C";
+      // memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "03d", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "03n", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
       break;
     case 2:
-      memcpy(oneCallListener.m_data.m_dailyData[0].m_weatherIcon, "04d", sizeof(oneCallListener.m_data.m_dailyData[0].m_weatherIcon));
-      memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "09d", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
-      memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "09n", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[0].m_weatherIcon, "04d", sizeof(oneCallListener.m_data.m_dailyData[0].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "09d", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "09n", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
       break;
     case 3:
-      memcpy(oneCallListener.m_data.m_dailyData[0].m_weatherIcon, "10d", sizeof(oneCallListener.m_data.m_dailyData[0].m_weatherIcon));
-      memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "13d", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
-      memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "50d", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[0].m_weatherIcon, "10d", sizeof(oneCallListener.m_data.m_dailyData[0].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[1].m_weatherIcon, "13d", sizeof(oneCallListener.m_data.m_dailyData[1].m_weatherIcon));
+      // memcpy(oneCallListener.m_data.m_dailyData[2].m_weatherIcon, "50d", sizeof(oneCallListener.m_data.m_dailyData[2].m_weatherIcon));
       break;
   }
 
@@ -78,7 +99,7 @@ void loop()
   //unixTime.getDateTime(pCurrentData->m_dateTime);
   unixTime.getDateTime(oneCallListener.m_data.m_currentData.m_dateTime);
 
-  String dateTimeString = 
+  String dateTimeString = "Current time:  " +
     String(unixTime.hour) + ":" + String(unixTime.minute) + ":" + String(unixTime.second) + " " + 
     String(unixTime.day) + "." + unixTime.month/*monthNames[unixTime.month-1]*/ + "." + String(unixTime.year);
   Serial.println(dateTimeString);

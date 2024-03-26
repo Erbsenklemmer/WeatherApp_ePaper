@@ -1,3 +1,4 @@
+#include "ESP8266WiFi.h"
 #include "core_esp8266_features.h"
 #include "GlobalSettings.h"
 
@@ -16,18 +17,16 @@ unsigned int availableRemainingCounter = 0;
 
 bool WifiParser::setup() 
 {
-  #if defined __TEST__
-    return true;
-  #endif// __TEST__
-
   WiFi.begin(ssid, password);
-  Serial.println("Connecting");
+  Serial.println("Connecting: " + String(ssid) + ", " + String(password));
+  int i=0;
   while(WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+    Serial.print("." + String(++i));
   }
 
   Serial.println("");
+  Serial.println("Wifi::status: " + String(WiFi.status()));
   Serial.print("Connected to WiFi network with IP Address: ");
   Serial.println(WiFi.localIP());
 
@@ -48,11 +47,11 @@ bool WifiParser::parse(JsonStreamingParser* pParser)
   #endif// __TEST__
 
   bool ok(true);
-  // String oneCallWheaterRequest = String("http://api.openweathermap.org/data/3.0/onecall")
-  //         + "?lat=" + lat + "&lon=" + lon + "&appid=" + appid + "&units=" + units + "&lang=" + lang;
+  String oneCallWheaterRequest = String("http://api.openweathermap.org/data/3.0/onecall")
+           + "?lat=" + lat + "&lon=" + lon + "&appid=" + appid + "&units=" + units + "&lang=" + lang;
 
-  String oneCallWheaterRequest = String("http://api.openweathermap.org/data/2.5/weather")
-          + "?lat=" + lat + "&lon=" + lon + "&appid=" + appid + "&units=" + units + "&lang=" + lang;
+  //String oneCallWheaterRequest = String("http://api.openweathermap.org/data/2.5/weather")
+  //        + "?lat=" + lat + "&lon=" + lon + "&appid=" + appid + "&units=" + units + "&lang=" + lang;
 
   if ((millis() - lastTime) > timerDelay)
   {
@@ -81,9 +80,11 @@ bool WifiParser::httpGETRequest(const char* szRequest, JsonStreamingParser* pPar
   HTTPClient http;
     
   // Your Domain name with URL path or IP address with path
+  Serial.println("http.begin");
   http.begin(client, szRequest);
   
   // Send HTTP POST request
+  Serial.println("http.GET");
   int httpResponseCode = http.GET();
   
   String payload; 

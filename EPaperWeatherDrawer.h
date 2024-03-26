@@ -5,7 +5,7 @@
 #include "GxEPD2_3C.h"
 
 
-#define __Test_Paint_DailyData__
+//#define __Test_Paint_DailyData__
 
 #include "OneCallData.h"
 #include "DailyData.h"
