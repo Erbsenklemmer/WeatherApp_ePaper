@@ -228,7 +228,7 @@ void EPaperWeatherDrawer::DrawMediumMoonWithCloudAndRain(int offsetX, int offset
 
 void EPaperWeatherDrawer::DrawRain(int offsetX, int offsetY)//10d
 {
-  offsetY+=15;
+  offsetY+=20;
 
   DrawWhiteCloud(offsetX+20, offsetY);
   DrawBlackCloud(offsetX   , offsetY+24);

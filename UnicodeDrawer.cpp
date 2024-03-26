@@ -16,6 +16,7 @@ String UnicodeDrawer::preUnicode(const String& text) {
   ret.replace("ü", "u");
 
   ret.replace("°", " ");
+  ret.replace("ß", "ss");
   return ret;
 }
 
