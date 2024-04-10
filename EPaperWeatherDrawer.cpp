@@ -66,8 +66,6 @@ void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData
 {
   DrawIcon(x, y, dailyData.m_weatherIcon);
 
-  const int margin = 2;
-
   int startX = x + 100;
   int startY = y;
 

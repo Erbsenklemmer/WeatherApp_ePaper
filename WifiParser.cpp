@@ -5,9 +5,7 @@
 #include "JsonStreamingParser.h"
 #include "WifiParser.h"
 
-uint lastTime = millis();
-unsigned long timerDelay = 10000;
-unsigned int availableRemainingCounter = 0;
+unsigned int availableRemainingCounter = 0;//for analysing the GET-request 
 
 //#define __TEST__
 
@@ -53,20 +51,17 @@ bool WifiParser::parse(JsonStreamingParser* pParser)
   //String oneCallWheaterRequest = String("http://api.openweathermap.org/data/2.5/weather")
   //        + "?lat=" + lat + "&lon=" + lon + "&appid=" + appid + "&units=" + units + "&lang=" + lang;
 
-  if ((millis() - lastTime) > timerDelay)
-  {
-    Serial.println(oneCallWheaterRequest);
+  Serial.println(oneCallWheaterRequest);
 
-    // Check WiFi connection status
-    if(WiFi.status()== WL_CONNECTED)
-    {    
-      ok = httpGETRequest(oneCallWheaterRequest.c_str(), pParser);
-    }
-    else 
-    {
-      Serial.println("WiFi Disconnected");
-    }
-    lastTime = millis();
+  // Check WiFi connection status
+  if(WiFi.status()== WL_CONNECTED)
+  {    
+    ok = httpGETRequest(oneCallWheaterRequest.c_str(), pParser);
+  }
+  else 
+  {
+    ok = false;
+    Serial.println("Wifi not connected");
   }
 
   return ok;

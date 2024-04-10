@@ -28,7 +28,6 @@ void setup()
 void loop() 
 {
   Serial.println("Starting LOOP");
-  delay(2*1000);
 
   OneCallListener oneCallListener;
   oneCallListener.Reset();//needed if we want to loop
@@ -36,6 +35,7 @@ void loop()
   JsonStreamingParser parser;
   parser.setListener(&oneCallListener);
 
+  bool weatherDataAvailable = true;
 #ifdef __Test_Paint_DailyData__
    //memcpy(m_data.m_dailyData[m_data.m_dailyCount].m_weatherIcon, (void*)value.c_str(), sizeof(m_data.m_dailyData[m_data.m_dailyCount].m_weatherIcon));
   switch (go)
@@ -72,11 +72,18 @@ void loop()
   //   ++go;
 
 #else
-  WifiParser::parse(&parser);
+  weatherDataAvailable = WifiParser::parse(&parser);
 #endif //__Test_Paint_DailyData__
 
-  EPaperWeatherDrawer::drawOneCallData(oneCallListener.m_data);
-
+  if (weatherDataAvailable)
+  {
+    EPaperWeatherDrawer::drawOneCallData(oneCallListener.m_data);
+  }
+  else
+  {
+    Serial.println("Failed to get any weather data");
+  }
+  
   UnixTime unixTime(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);
   //CurrentData *pCurrentData = &oneCallListener.m_data.m_currentData;
   
@@ -88,6 +95,6 @@ void loop()
     String(unixTime.day) + "." + unixTime.month/*monthNames[unixTime.month-1]*/ + "." + String(unixTime.year);
   Serial.println(dateTimeString);
 
-  Serial.println("RETURN");
+  Serial.println("Waiting");
   delay(60 * 1000);
 }
