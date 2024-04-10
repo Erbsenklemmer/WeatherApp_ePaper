@@ -87,7 +87,6 @@ bool WifiParser::httpGETRequest(const char* szRequest, JsonStreamingParser* pPar
   Serial.println("http.GET");
   int httpResponseCode = http.GET();
   
-  String payload; 
   WiFiClient* pClientStream;
 
   if (httpResponseCode > 0) 

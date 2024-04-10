@@ -16,35 +16,19 @@ void setup()
   while (Serial.availableForWrite() <= 0)
   {}
 
-// const char* ssid     = "Multipass Friends";
-// const char* password = "Willkommen";
-//   WiFi.begin(ssid, password);
-//   Serial.println("Connecting: " + String(ssid) + ", " + String(password));
-//   int i=0;
-//   while(WiFi.status() != WL_CONNECTED) {
-//     delay(500);
-//     Serial.print("." + String(++i));
-//   }
-
-//   Serial.println("");
-//   Serial.println("Wifi::status: " + String(WiFi.status()));
-//   Serial.print("Connected to WiFi network with IP Address: ");
-//   Serial.println(WiFi.localIP());
-
-  Serial.println("setup");
+  Serial.println("setup - start");
 
   WifiParser::setup();
 
   EPaperWeatherDrawer::setup();
 
-  Serial.println("setup");
+  Serial.println("setup - done");
 }
 
 void loop() 
 {
   Serial.println("Starting LOOP");
   delay(2*1000);
-  Serial.println("------ LOOP ------");
 
   OneCallListener oneCallListener;
   oneCallListener.Reset();//needed if we want to loop
