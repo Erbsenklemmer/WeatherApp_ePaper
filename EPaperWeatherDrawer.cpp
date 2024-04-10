@@ -8,6 +8,8 @@
 #include <Fonts/FreeSansBold12pt7b.h>
 #include <Fonts/FreeSansBold18pt7b.h>
 
+#include "Fonts/Dialog_bold_10.h"
+
 
 //more fonts: D:\Projekte\Arduino\libraries\Adafruit_GFX_Library\Fonts
 
@@ -16,6 +18,8 @@
 
 GxEPD2_3C<GxEPD2_420c, GxEPD2_420c::HEIGHT> display(GxEPD2_420c(D8, D3, D1, D2));
 //GxEPD2_3C<GxEPD2_420c_Z21, GxEPD2_420c_Z21::HEIGHT> display(GxEPD2_420c_Z21(D8, D3, D1, D2));
+
+U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
 
 const  int COLOR_FOREGROUND = GxEPD_BLACK;
 const  int COLOR_BACKGROUND = GxEPD_WHITE;
@@ -26,6 +30,10 @@ void EPaperWeatherDrawer::setup()
   Serial.println("EPaperWeatherDrawer::setup() enter");
 
   display.init();
+
+  u8g2Fonts.begin(display);  
+  u8g2Fonts.setForegroundColor(COLOR_FOREGROUND);
+  u8g2Fonts.setBackgroundColor(COLOR_BACKGROUND);
 
   display.setRotation(1);
   display.setFullWindow();
@@ -81,10 +89,20 @@ void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData
   String replace = unicodeDrawer.preUnicode(dailyData.m_weatherDescription);
   display.getTextBounds(replace, 0, 0, &tbx, &tby, &tbw, &tbh);
 
-  display.setCursor(startX, startY + tbh);
+  u8g2Fonts.setFont(u8g2_font_helvB14_tf);
+  u8g2Fonts.setCursor(startX, startY + tbh);
+  u8g2Fonts.print(dailyData.m_weatherDescription);
 
-  unicodeDrawer.printUnicode(dailyData.m_weatherDescription, COLOR_FOREGROUND, COLOR_BACKGROUND, true);
+  u8g2Fonts.setFont(u8g2_font_helvB24_tf);
+  u8g2Fonts.setCursor(startX, startY + 45);
+  u8g2Fonts.print(String(dailyData.m_tempDay, 1) + "°");
 
+  u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+  u8g2Fonts.setCursor(startX + 90, startY + 30);
+  u8g2Fonts.print("min " + String(dailyData.m_tempMin, 1) + "°");
+
+  u8g2Fonts.setCursor(startX + 90, startY + 30+14+3);
+  u8g2Fonts.print("max " + String(dailyData.m_tempMax, 1) + "°");
 }
 
 void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
@@ -120,7 +138,7 @@ void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
     DrawSnow(x, y);//13d
 
   else if (crIcon == "50d")
-      DrawFogg(x, y);//50d/n
+    DrawFogg(x, y);//50d/n
   }
 
 void EPaperWeatherDrawer::DrawSun(int offsetX, int offsetY) 

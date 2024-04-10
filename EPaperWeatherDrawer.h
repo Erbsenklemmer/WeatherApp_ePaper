@@ -1,8 +1,10 @@
 #pragma once
 
 #define ENABLE_GxEPD2_GFX 1
+#define ENABLE_GxEPD2_display 0
 
 #include "GxEPD2_3C.h"
+#include <U8g2_for_Adafruit_GFX.h>
 
 //#define __Test_Paint_DailyData__
 
