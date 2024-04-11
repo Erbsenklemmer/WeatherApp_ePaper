@@ -12,6 +12,7 @@ DailyData::~DailyData()
 void DailyData::clear()
 {
     m_dateTime = -1;
+    m_dayOfWeek = -1;
 
     m_sunRise = -1;
     m_sunSet = -1;

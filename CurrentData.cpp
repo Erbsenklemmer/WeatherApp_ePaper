@@ -12,6 +12,7 @@ CurrentData::~CurrentData()
 void CurrentData::clear()
 {
     m_dateTime = -1;
+    m_dayOfWeek = -1;
     
     m_temp = 0;
     m_tempFeelsLike = 0;

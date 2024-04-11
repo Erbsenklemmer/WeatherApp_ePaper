@@ -27,6 +27,8 @@ class OneCallListener: public JsonListener {
     void PushObjectName(const String& name);
     const String PopObjectName();
 
+    const int16_t CalcDayOfWeek(int unixTimeRaw);
+
     OneCallData m_data;
 
 private:

@@ -1,3 +1,4 @@
+#include "HardwareSerial.h"
 #include "OneCallListener.h"
 
 //#include "../ArduinoC++Fake/Serial.h"
@@ -178,7 +179,7 @@ void OneCallListener::startObject() {
     {
         m_data.m_dailyCountRaw++;
 
-        if (m_data.m_dailyCountRaw < 3)
+        if (m_data.m_dailyCountRaw < dailyForeCasts)
         {
             m_data.m_dailyCount++;
             m_data.m_dailyReadEnable = true;
@@ -274,11 +275,19 @@ void OneCallListener::DumpStackObjectName() {
     //Serial.println("");
 }
 
+const int16_t OneCallListener::CalcDayOfWeek(int unixTimeRaw)
+{
+  int unixTime = unixTimeRaw + (m_data.m_timezone_offset_in_half_hours * 1800);
+  int16_t dayOfWeek = (int(unixTime / 86400.0) + 4) % 7;
+  return dayOfWeek;
+}
+
 void OneCallListener::ReadCurrent(const String& value)
 {
     if (m_lastKeyName == "dt")
     {
         m_data.m_currentData.m_dateTime = value.toInt();
+        m_data.m_currentData.m_dayOfWeek = CalcDayOfWeek(value.toInt());
     }
     else if (m_lastKeyName == "temp")
     {
@@ -375,6 +384,7 @@ void OneCallListener::ReadDaily(const String& value)
     if (m_lastKeyName == "dt")
     {
         m_data.m_dailyData[m_data.m_dailyCount].m_dateTime = value.toInt();
+        m_data.m_dailyData[m_data.m_dailyCount].m_dayOfWeek = CalcDayOfWeek(value.toInt());
     }
     else if (m_lastKeyName == "sunrise")
     {

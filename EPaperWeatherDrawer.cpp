@@ -8,9 +8,6 @@
 #include <Fonts/FreeSansBold12pt7b.h>
 #include <Fonts/FreeSansBold18pt7b.h>
 
-#include "Fonts/Dialog_bold_10.h"
-
-
 //more fonts: D:\Projekte\Arduino\libraries\Adafruit_GFX_Library\Fonts
 
 #include "EPaperWeatherDrawer.h"
@@ -55,15 +52,16 @@ void EPaperWeatherDrawer::drawOneCallData(const OneCallData& oneCallData)
   {
     display.fillScreen(COLOR_BACKGROUND);
 
-    drawDailyData(0, 100, oneCallData.m_dailyData[0]);
-    drawDailyData(0, 200, oneCallData.m_dailyData[1]);
-    drawDailyData(0, 300, oneCallData.m_dailyData[2]);
+    drawDailyData(  0, 200, oneCallData.m_dailyData[1]);
+    drawDailyData(100, 200, oneCallData.m_dailyData[2]);
+    drawDailyData(200, 200, oneCallData.m_dailyData[3]);
 
     display.drawLine(100, 100, 100, 400, COLOR_FOREGROUND);
+    display.drawLine(200, 100, 200, 400, COLOR_RED);
     
     display.drawLine(0, 100, 300, 100, COLOR_RED);
     display.drawLine(0, 200, 300, 200, COLOR_RED);
-    display.drawLine(0, 300, 300, 300, COLOR_RED);
+    //display.drawLine(0, 300, 300, 300, COLOR_RED);
   } 
   while(display.nextPage());
 
@@ -72,37 +70,54 @@ void EPaperWeatherDrawer::drawOneCallData(const OneCallData& oneCallData)
 
 void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData)
 {
-  DrawIcon(x, y, dailyData.m_weatherIcon);
-
-  int startX = x + 100;
+  int startX = x;
   int startY = y;
 
-  //dtostrf display.set
-  display.setTextColor(COLOR_FOREGROUND);
-  display.setFont(&FreeSans9pt7b);
-
-  int16_t tbx, tby; 
-  uint16_t tbw, tbh;
-
-  UnicodeDrawer unicodeDrawer(&display);
-  
-  String replace = unicodeDrawer.preUnicode(dailyData.m_weatherDescription);
-  display.getTextBounds(replace, 0, 0, &tbx, &tby, &tbw, &tbh);
-
-  u8g2Fonts.setFont(u8g2_font_helvB14_tf);
-  u8g2Fonts.setCursor(startX, startY + tbh);
-  u8g2Fonts.print(dailyData.m_weatherDescription);
-
-  u8g2Fonts.setFont(u8g2_font_helvB24_tf);
-  u8g2Fonts.setCursor(startX, startY + 45);
-  u8g2Fonts.print(String(dailyData.m_tempDay, 1) + "°");
+  String textOut;
+  int16_t textWidth, textHeight;
+  int16_t startYNext = startY + 10; 
 
   u8g2Fonts.setFont(u8g2_font_helvR14_tf);
-  u8g2Fonts.setCursor(startX + 90, startY + 30);
-  u8g2Fonts.print("min " + String(dailyData.m_tempMin, 1) + "°");
+  u8g2Fonts.setCursor(startX, startY);
+  u8g2Fonts.print(String(dailyData.m_dayOfWeek));
 
-  u8g2Fonts.setCursor(startX + 90, startY + 30+14+3);
-  u8g2Fonts.print("max " + String(dailyData.m_tempMax, 1) + "°");
+  startY += 70;
+  DrawIcon(startX, startY, dailyData.m_weatherIcon);
+
+// weather description
+  // u8g2Fonts.setFont(u8g2_font_helvB14_tf);
+
+  // textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+  // startYNext += textHeight;
+
+  // u8g2Fonts.setCursor(startX, startYNext);
+  // u8g2Fonts.print(dailyData.m_weatherDescription);
+
+// main temp
+  u8g2Fonts.setFont(u8g2_font_helvB24_tf);
+
+  textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+  startYNext += textHeight;
+
+  textOut = String(dailyData.m_tempDay, 1) + "°";
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+  Serial.println(textOut + " length: " + String(textWidth));
+  
+  u8g2Fonts.setCursor(startX + ((100-textWidth) / 2), startYNext);
+  u8g2Fonts.print(textOut);
+
+// min / max temp
+  u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+
+  textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+  startYNext += textHeight;
+
+  textOut = String(dailyData.m_tempMin, 0) + "° | " + String(dailyData.m_tempMax, 0) + "°";
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+  Serial.println(textOut + " length: " + String(textWidth));
+
+  u8g2Fonts.setCursor(startX + ((100-textWidth) / 2), startYNext);
+  u8g2Fonts.print(textOut);
 }
 
 void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)

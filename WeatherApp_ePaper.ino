@@ -22,12 +22,12 @@ void setup()
 
   EPaperWeatherDrawer::setup();
 
-  Serial.println("setup - done");
-}
+//   Serial.println("setup - done");
+// }
 
-void loop() 
-{
-  Serial.println("Starting LOOP");
+// void loop() 
+// {
+//   Serial.println("Starting LOOP");
 
   OneCallListener oneCallListener;
   oneCallListener.Reset();//needed if we want to loop
@@ -85,6 +85,8 @@ void loop()
   }
   
   UnixTime unixTime(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);
+  String offset = String(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);
+  Serial.println("offset: " + offset);
   //CurrentData *pCurrentData = &oneCallListener.m_data.m_currentData;
   
   //unixTime.getDateTime(pCurrentData->m_dateTime);
@@ -97,4 +99,8 @@ void loop()
 
   Serial.println("Waiting");
   delay(60 * 1000);
+}
+
+void loop() 
+{
 }

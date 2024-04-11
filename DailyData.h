@@ -11,6 +11,7 @@ public:
 	void clear();
 
 	int m_dateTime;
+  int16_t m_dayOfWeek; 
 
 	int m_sunRise;
 	int m_sunSet;
