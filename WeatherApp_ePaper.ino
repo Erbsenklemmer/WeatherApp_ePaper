@@ -77,25 +77,26 @@ void setup()
 
   if (weatherDataAvailable)
   {
-    EPaperWeatherDrawer::drawOneCallData(oneCallListener.m_data);
+    UnixTime unixTime(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);
+    EPaperWeatherDrawer::drawOneCallData(oneCallListener.m_data, unixTime);
   }
   else
   {
     Serial.println("Failed to get any weather data");
   }
   
-  UnixTime unixTime(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);
-  String offset = String(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);
-  Serial.println("offset: " + offset);
-  //CurrentData *pCurrentData = &oneCallListener.m_data.m_currentData;
+  // UnixTime unixTime(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);
+  // String offset = String(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);
+  // Serial.println("offset: " + offset);
+  // //CurrentData *pCurrentData = &oneCallListener.m_data.m_currentData;
   
-  //unixTime.getDateTime(pCurrentData->m_dateTime);
-  unixTime.getDateTime(oneCallListener.m_data.m_currentData.m_dateTime);
+  // //unixTime.getDateTime(pCurrentData->m_dateTime);
+  // unixTime.getDateTime(oneCallListener.m_data.m_currentData.m_dateTime);
 
-  String dateTimeString = "Current time:  " +
-    String(unixTime.hour) + ":" + String(unixTime.minute) + ":" + String(unixTime.second) + " " + 
-    String(unixTime.day) + "." + unixTime.month/*monthNames[unixTime.month-1]*/ + "." + String(unixTime.year);
-  Serial.println(dateTimeString);
+  // String dateTimeString = "Current time:  " +
+  //   String(unixTime.hour) + ":" + String(unixTime.minute) + ":" + String(unixTime.second) + " " + 
+  //   String(unixTime.day) + "." + unixTime.month/*monthNames[unixTime.month-1]*/ + "." + String(unixTime.year);
+  // Serial.println(dateTimeString);
 
   Serial.println("Waiting");
   delay(60 * 1000);

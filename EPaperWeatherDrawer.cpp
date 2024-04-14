@@ -1,12 +1,12 @@
 
 //#include <Fonts/FreeMono9pt7b.h>
-#include <Fonts/FreeSans9pt7b.h>
-#include <Fonts/FreeSans12pt7b.h>
-#include <Fonts/FreeSans18pt7b.h>
+// #include <Fonts/FreeSans9pt7b.h>
+// #include <Fonts/FreeSans12pt7b.h>
+// #include <Fonts/FreeSans18pt7b.h>
 
-#include <Fonts/FreeSansBold9pt7b.h>
-#include <Fonts/FreeSansBold12pt7b.h>
-#include <Fonts/FreeSansBold18pt7b.h>
+// #include <Fonts/FreeSansBold9pt7b.h>
+// #include <Fonts/FreeSansBold12pt7b.h>
+// #include <Fonts/FreeSansBold18pt7b.h>
 
 //more fonts: D:\Projekte\Arduino\libraries\Adafruit_GFX_Library\Fonts
 
@@ -21,6 +21,9 @@ U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
 const  int COLOR_FOREGROUND = GxEPD_BLACK;
 const  int COLOR_BACKGROUND = GxEPD_WHITE;
 const  int COLOR_RED = GxEPD_RED;
+
+const char* weekdays[] = { "Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag" };
+const char* monthNames[] = { "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember" };
 
 void EPaperWeatherDrawer::setup()
 {
@@ -40,7 +43,7 @@ void EPaperWeatherDrawer::setup()
   Serial.println("EPaperWeatherDrawer::setup() leaving");
 }
 
-void EPaperWeatherDrawer::drawOneCallData(const OneCallData& oneCallData)
+void EPaperWeatherDrawer::drawOneCallData(const OneCallData& oneCallData, UnixTime unixTime)
 {
   // Serial.println("Drawing disabled!!!");
   // return;
@@ -52,20 +55,53 @@ void EPaperWeatherDrawer::drawOneCallData(const OneCallData& oneCallData)
   {
     display.fillScreen(COLOR_BACKGROUND);
 
+    drawTodayData(0, 0, unixTime, oneCallData.m_currentData, oneCallData.m_dailyData[0]);
+
     drawDailyData(  0, 200, oneCallData.m_dailyData[1]);
     drawDailyData(100, 200, oneCallData.m_dailyData[2]);
     drawDailyData(200, 200, oneCallData.m_dailyData[3]);
 
-    display.drawLine(100, 100, 100, 400, COLOR_FOREGROUND);
-    display.drawLine(200, 100, 200, 400, COLOR_RED);
+    // display.drawLine(100, 100, 100, 400, COLOR_FOREGROUND);
+    // display.drawLine(200, 100, 200, 400, COLOR_RED);
     
-    display.drawLine(0, 100, 300, 100, COLOR_RED);
+    // display.drawLine(0, 100, 300, 100, COLOR_RED);
     display.drawLine(0, 200, 300, 200, COLOR_RED);
     //display.drawLine(0, 300, 300, 300, COLOR_RED);
   } 
   while(display.nextPage());
 
   display.hibernate();
+}
+
+void EPaperWeatherDrawer::drawTodayData(int x, int y, UnixTime unixTime, const CurrentData& currentData, const DailyData& todayData)
+{
+  String textOut;
+  int16_t textWidth, textHeight;
+  int16_t startX = x; 
+  int16_t startYNext = y; 
+
+  u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+  textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+  startYNext += textHeight;
+
+  unixTime.getDateTime(currentData.m_dateTime);
+
+//day
+  textOut = String(weekdays[todayData.m_dayOfWeek]) + ", " + String(unixTime.day) + ". " + String(monthNames[unixTime.month-1]);
+
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+  u8g2Fonts.setCursor(startX + ((display.width()-textWidth) / 2), startYNext);
+  u8g2Fonts.print(textOut);
+
+//time
+  String fill = unixTime.minute < 10 ? ":0" : ":";
+  textOut = String(unixTime.hour) + fill + String(unixTime.minute);
+
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+  u8g2Fonts.setCursor(startX + ((display.width()-textWidth)), startYNext);
+  u8g2Fonts.print(textOut);
 }
 
 void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData)
@@ -75,14 +111,26 @@ void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData
 
   String textOut;
   int16_t textWidth, textHeight;
-  int16_t startYNext = startY + 10; 
+  int16_t startYNext = startY; 
 
+//weekday
   u8g2Fonts.setFont(u8g2_font_helvR14_tf);
-  u8g2Fonts.setCursor(startX, startY);
-  u8g2Fonts.print(String(dailyData.m_dayOfWeek));
 
-  startY += 70;
-  DrawIcon(startX, startY, dailyData.m_weatherIcon);
+  textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+  startYNext += textHeight;
+
+  textOut = weekdays[dailyData.m_dayOfWeek];
+
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+  u8g2Fonts.setCursor(startX + ((100-textWidth) / 2), startYNext);
+  u8g2Fonts.print(textOut);
+
+//draw Icon
+  //startY += 70;
+  DrawIcon(startX, startYNext, dailyData.m_weatherIcon);
+
+  startYNext += 100;
 
 // weather description
   // u8g2Fonts.setFont(u8g2_font_helvB14_tf);
@@ -112,7 +160,7 @@ void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData
   textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
   startYNext += textHeight;
 
-  textOut = String(dailyData.m_tempMin, 0) + "° | " + String(dailyData.m_tempMax, 0) + "°";
+  textOut = String(dailyData.m_tempMax, 0) + "° | " + String(dailyData.m_tempMin, 0) + "°";
   textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
   Serial.println(textOut + " length: " + String(textWidth));
 
@@ -143,12 +191,16 @@ void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
     DrawBlackAndWhiteCloud(x, y);//04d/n
 
   else if (crIcon == "09d")
-    DrawMediumSunWithCloudAndRain(x, y);//09d  
-  else if (crIcon == "09n")
-    DrawMediumMoonWithCloudAndRain(x, y);//09n
+    DrawRain(x, y);//10d  
 
   else if (crIcon == "10d")
-    DrawRain(x, y);//10d  
+    DrawMediumSunWithCloudAndRain(x, y);//10d  
+  else if (crIcon == "10n")
+    DrawMediumMoonWithCloudAndRain(x, y);//10n
+
+  // else if (crIcon == "11d")
+  //   DrawBlackAndWhiteCloudWithFlash(x, y);//11d
+
   else if (crIcon == "13d")
     DrawSnow(x, y);//13d
 
@@ -259,7 +311,8 @@ void EPaperWeatherDrawer::DrawMediumMoonWithCloudAndRain(int offsetX, int offset
 
 void EPaperWeatherDrawer::DrawRain(int offsetX, int offsetY)//10d
 {
-  offsetY+=20;
+  offsetX += 4;
+  offsetY += 20;
 
   DrawWhiteCloud(offsetX+20, offsetY);
   DrawBlackCloud(offsetX   , offsetY+24);
@@ -275,7 +328,8 @@ void EPaperWeatherDrawer::DrawRain(int offsetX, int offsetY)//10d
 
 void EPaperWeatherDrawer::DrawSnow(int offsetX, int offsetY) //13d
 {
-  offsetY+=15;
+  offsetX += 4;
+  offsetY += 15;
 
   DrawWhiteCloud(offsetX+20, offsetY);
   DrawBlackCloud(offsetX   , offsetY+24);

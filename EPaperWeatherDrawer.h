@@ -6,6 +6,8 @@
 #include "GxEPD2_3C.h"
 #include <U8g2_for_Adafruit_GFX.h>
 
+#include <UnixTime.h>
+
 //#define __Test_Paint_DailyData__
 
 #include "OneCallData.h"
@@ -18,9 +20,10 @@ class EPaperWeatherDrawer
   public:
     static void setup();
 
-    static void drawOneCallData(const OneCallData& oneCallData);
+    static void drawOneCallData(const OneCallData& oneCallData, UnixTime unixTime);
 
   protected:
+    static void drawTodayData(int x, int y, UnixTime unixTime, const CurrentData& currentData, const DailyData& todayData);
     static void drawDailyData(int x, int y, const DailyData& dailyData);
 
   private:
