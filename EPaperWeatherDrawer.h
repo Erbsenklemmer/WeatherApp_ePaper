@@ -15,6 +15,8 @@
 #include "HourlyData.h"
 #include "CurrentData.h"
 
+#include "PointData.h"
+
 class EPaperWeatherDrawer
 {
   public:
@@ -43,6 +45,8 @@ class EPaperWeatherDrawer
     static void DrawMediumSunWithCloudAndRain(int x, int y);//09d
     static void DrawMediumMoonWithCloudAndRain(int x, int y);//09n
 
+    static void DrawThunderstorm(int offsetX, int offsetY);//11d
+
     static void DrawRain(int x, int y);//10d
     static void DrawSnow(int x, int y);//013d
 
@@ -59,4 +63,6 @@ class EPaperWeatherDrawer
     
 
     static void DrawPolarRay(int middleX, int middleY, int length, int angle);
+    static void DrawLine(PointData p1, PointData p2, uint16_t color);
+    static void FillTriangle(PointData p1, PointData p2, PointData p3, uint16_t color);
 };

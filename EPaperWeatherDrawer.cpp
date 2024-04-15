@@ -102,6 +102,9 @@ void EPaperWeatherDrawer::drawTodayData(int x, int y, UnixTime unixTime, const C
 
   u8g2Fonts.setCursor(startX + ((display.width()-textWidth)), startYNext);
   u8g2Fonts.print(textOut);
+
+//test code
+  DrawThunderstorm(0,50);
 }
 
 void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData)
@@ -198,8 +201,8 @@ void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
   else if (crIcon == "10n")
     DrawMediumMoonWithCloudAndRain(x, y);//10n
 
-  // else if (crIcon == "11d")
-  //   DrawBlackAndWhiteCloudWithFlash(x, y);//11d
+  else if (crIcon == "11d")
+    DrawThunderstorm(x, y);//11d
 
   else if (crIcon == "13d")
     DrawSnow(x, y);//13d
@@ -307,6 +310,43 @@ void EPaperWeatherDrawer::DrawMediumMoonWithCloudAndRain(int offsetX, int offset
   {
     display.drawLine(i+24+offsetX, 70+offsetY, i+27+offsetX, 77+offsetY, COLOR_FOREGROUND);
   }
+}
+
+void EPaperWeatherDrawer::DrawLine(PointData p1, PointData p2, uint16_t color) {
+  display.drawLine(p1.x, p1.y, p2.x, p2.y, color);
+}
+
+void EPaperWeatherDrawer::FillTriangle(PointData p1, PointData p2, PointData p3, uint16_t color) {
+  display.fillTriangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, color);
+}
+
+void EPaperWeatherDrawer::DrawThunderstorm(int offsetX, int offsetY) {
+  DrawRain(offsetX, offsetY);
+
+  int x = offsetX+5;
+  int y = offsetY+46;
+
+  PointData p1(44+x, 24+y);
+  PointData p2(35+x, 24+y);
+  PointData p3(24+x, 40+y);
+  PointData p4(30+x, 40+y);
+  PointData p5(22+x, 55+y);
+  PointData p6(40+x, 35+y);
+  PointData p7(36+x, 35+y);
+
+  FillTriangle(p1, p2, p3, COLOR_RED);
+  FillTriangle(p3, p1, p7, COLOR_RED);
+  FillTriangle(p3, p4, p7, COLOR_RED);
+  FillTriangle(p4, p6, p7, COLOR_RED);
+  FillTriangle(p4, p6, p5, COLOR_RED);
+
+  DrawLine(p1, p2, COLOR_FOREGROUND);
+  DrawLine(p2, p3, COLOR_FOREGROUND);
+  DrawLine(p3, p4, COLOR_FOREGROUND);
+  DrawLine(p4, p5, COLOR_FOREGROUND);
+  DrawLine(p5, p6, COLOR_FOREGROUND);
+  DrawLine(p6, p7, COLOR_FOREGROUND);
+  DrawLine(p7, p1, COLOR_FOREGROUND);
 }
 
 void EPaperWeatherDrawer::DrawRain(int offsetX, int offsetY)//10d
