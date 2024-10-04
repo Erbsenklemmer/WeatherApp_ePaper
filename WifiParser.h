@@ -1,9 +1,12 @@
 #pragma once
 
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
+#include <ArduinoHttpClient.h>
+//#include <WiFi101.h>
 
-//#include <WiFi.h>
+//#include <ESP8266WiFi.h>
+//#include <ESP8266HTTPClient.h>
+
+#include <WiFi.h>
 //#include <HTTPClient.h>
 
 class JsonStreamingParser;
