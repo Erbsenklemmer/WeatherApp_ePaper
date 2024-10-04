@@ -32,34 +32,55 @@ class EPaperWeatherDrawer
     static void DrawIcon(int x, int y, const String& crIcon);
 
     static void DrawSun(int x, int y);//01d
+    static void DrawSun_Small(int offsetX, int offsetY);//01d
+
     static void DrawMoon(int x, int y);//01n
+    static void DrawMoon_Small(int offsetX, int offsetY);//01n
 
     static void DrawMediumSunWithCloud(int x, int y);//02d
+    static void DrawMediumSunWithCloud_Small(int x, int y);//02d
+
     static void DrawMediumMoonWithCloud(int x, int y);//02n
+    static void DrawMediumMoonWithCloud_Small(int x, int y);//02n
 
     static void DrawBlackAndWhiteCloudWithSun(int x, int y);//03d
+    static void DrawBlackAndWhiteCloudWithSun_Small(int x, int y);//03d
     static void DrawBlackAndWhiteCloudWithMoon(int x, int y);//03n
+    static void DrawBlackAndWhiteCloudWithMoon_Small(int x, int y);//03n
 
     static void DrawBlackAndWhiteCloud(int x, int y);//04d/n
+    static void DrawBlackAndWhiteCloud_Small(int x, int y);//04d/n
 
     static void DrawMediumSunWithCloudAndRain(int x, int y);//09d
+    static void DrawMediumSunWithCloudAndRain_Small(int x, int y);//09d
     static void DrawMediumMoonWithCloudAndRain(int x, int y);//09n
+    static void DrawMediumMoonWithCloudAndRain_Small(int x, int y);//09n
 
     static void DrawThunderstorm(int offsetX, int offsetY);//11d
+    static void DrawThunderstorm_Small(int offsetX, int offsetY);//11d
 
     static void DrawRain(int x, int y);//10d
-    static void DrawSnow(int x, int y);//013d
+    static void DrawRain_Small(int x, int y);//10d
+    static void DrawSnow(int x, int y);//13d
+    static void DrawSnow_Small(int x, int y);//13d
 
     static void DrawFogg(int x, int y);//50d
+    static void DrawFogg_Small(int x, int y);//50d
 
     static void DrawMediumSun(int x, int y);
+    static void DrawMediumSun_Small(int x, int y);
     static void DrawMediumMoon(int x, int y);
+    static void DrawMediumMoon_Small(int x, int y);
 
     static void DrawSmallSun(int x, int y);
+    static void DrawSmallSun_Small(int x, int y);
     static void DrawSmallMoon(int x, int y);
+    static void DrawSmallMoon_Small(int x, int y);
 
     static void DrawWhiteCloud(int x, int y);
+    static void DrawWhiteCloud_Small(int x, int y);
     static void DrawBlackCloud(int x, int y);
+    static void DrawBlackCloud_Small(int x, int y);
     
 
     static void DrawPolarRay(int middleX, int middleY, int length, int angle);
