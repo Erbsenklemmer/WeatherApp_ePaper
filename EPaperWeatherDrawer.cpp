@@ -11,7 +11,6 @@
 //more fonts: D:\Projekte\Arduino\libraries\Adafruit_GFX_Library\Fonts
 
 #include "EPaperWeatherDrawer.h"
-#include "UnicodeDrawer.h"
 
 GxEPD2_3C<GxEPD2_420c, GxEPD2_420c::HEIGHT> display(GxEPD2_420c(D8, D3, D1, D2));
 //GxEPD2_3C<GxEPD2_420c_Z21, GxEPD2_420c_Z21::HEIGHT> display(GxEPD2_420c_Z21(D8, D3, D1, D2));
