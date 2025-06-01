@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Arduino.h>
+
 class CurrentData
 {
 public:
@@ -17,5 +19,10 @@ public:
     float m_windSpeed;
     float m_windDeg;
     float m_windGust;
+
+    int m_weatherId;
+	String m_weatherMain;
+	String m_weatherDescription;
+	char m_weatherIcon[5];
 };
 
