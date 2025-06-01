@@ -72,7 +72,14 @@ void OneCallListener::value(String value) {
 
     if (m_data.m_currentReadEnable == true)
     {
-        ReadCurrent(value);
+        if (m_objectDepth == 2 && m_stackObjectName[m_objectDepth] == "weather")
+        {
+            ReadCurrentWeather(value);
+        }
+        else
+        {
+            ReadCurrent(value);
+        }
     }
     else if (m_data.m_hourlyReadEnable == true && (m_data.m_hourlyCount < hourlyForeCasts))
     {
@@ -305,9 +312,45 @@ void OneCallListener::ReadCurrent(const String& value)
     {
         m_data.m_currentData.m_windDeg = value.toFloat();
     }
-    else if (m_lastKeyName == "wind_gust")
+    // else if (m_lastKeyName == "wind_gust")
+    // {
+    //     m_data.m_currentData.m_windGust = value.toFloat();
+    // }
+    else if (m_lastKeyName == "pressure")
     {
-        m_data.m_currentData.m_windGust = value.toFloat();
+        m_data.m_currentData.m_pressure = value.toInt();
+    }
+    else if (m_lastKeyName == "humidity")
+    {
+        m_data.m_currentData.m_humidity = value.toInt();
+    }
+    // else if (m_lastKeyName == "dew_point")
+    // {
+    //     m_data.m_currentData.m_dew_point = value.toFloat();
+    // }
+    else if (m_lastKeyName == "uvi")
+    {
+        m_data.m_currentData.m_uvi = value.toFloat();
+    }
+}
+
+void OneCallListener::ReadCurrentWeather(const String& value)
+{
+    if (m_lastKeyName == "id")
+    {
+        m_data.m_currentData.m_weatherId = value.toInt();
+    }
+    else if (m_lastKeyName == "main")
+    {
+        m_data.m_currentData.m_weatherMain = value;
+    }
+    else if (m_lastKeyName == "description")
+    {
+        m_data.m_currentData.m_weatherDescription = value;
+    }
+    else if (m_lastKeyName == "icon")
+    {
+        memcpy(m_data.m_currentData.m_weatherIcon, (void*)value.c_str(), sizeof(m_data.m_currentData.m_weatherIcon));
     }
 }
 

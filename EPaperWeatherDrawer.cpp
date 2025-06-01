@@ -102,6 +102,40 @@ void EPaperWeatherDrawer::drawTodayData(int x, int y, UnixTime unixTime, const C
   u8g2Fonts.setCursor(startX + ((display.width()-textWidth)) - 5, startYNext);
   u8g2Fonts.print(textOut);
 
+//icon and temp in the middle
+//draw Icon
+  //startY += 70;
+  startX = 100;
+  startYNext += textHeight;
+
+  DrawIcon(startX, startYNext, currentData.m_weatherIcon);
+
+  startYNext += 100;
+
+// main temp
+  u8g2Fonts.setFont(u8g2_font_helvB18_tf);
+  textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+  startYNext += textHeight;
+
+  textOut = String(todayData.m_tempDay, 1) + "°";
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+//  Serial.println(textOut + " length: " + String(textWidth));
+  
+  u8g2Fonts.setCursor(startX + ((100-textWidth) / 2), startYNext);
+  u8g2Fonts.print(textOut);
+
+// // min / max temp
+  u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+
+  textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+  startYNext += textHeight;
+
+  textOut = String(todayData.m_tempMax, 0) + "° | " + String(todayData.m_tempMin, 0) + "°";
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+//  Serial.println(textOut + " length: " + String(textWidth));
+
+  u8g2Fonts.setCursor(startX + ((100-textWidth) / 2), startYNext);
+  u8g2Fonts.print(textOut);
 }
 
 void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData)
@@ -142,7 +176,7 @@ void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData
   // u8g2Fonts.print(dailyData.m_weatherDescription);
 
 // main temp
-  u8g2Fonts.setFont(u8g2_font_helvB24_tf);
+  u8g2Fonts.setFont(u8g2_font_helvB18_tf);
 
   textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
   startYNext += textHeight;
@@ -437,7 +471,7 @@ void EPaperWeatherDrawer::DrawThunderstorm_Small(int offsetX, int offsetY)
   DrawRain_Small(offsetX+2, offsetY);
 
   int x = offsetX+9;
-  int y = offsetY+136;
+  int y = offsetY+61;
 
 //  1 ----------7
 //  /          /

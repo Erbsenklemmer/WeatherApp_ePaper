@@ -16,9 +16,14 @@ public:
     float m_temp;
     float m_tempFeelsLike;
 
+	int m_pressure;
+	int m_humidity;
+	//float m_dew_point;
+	float m_uvi;
+
     float m_windSpeed;
     float m_windDeg;
-    float m_windGust;
+    //float m_windGust;
 
     int m_weatherId;
 	String m_weatherMain;

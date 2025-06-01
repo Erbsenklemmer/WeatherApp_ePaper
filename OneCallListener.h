@@ -51,6 +51,7 @@ private:
 
 private:
     void ReadCurrent(const String& value);
+    void ReadCurrentWeather(const String& value);
 
     void ReadHourly(const String& value);
     void ReadHourlyWeater(const String& value);
