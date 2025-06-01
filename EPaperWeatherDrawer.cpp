@@ -55,10 +55,11 @@ void EPaperWeatherDrawer::drawOneCallData(const OneCallData& oneCallData, UnixTi
     display.fillScreen(COLOR_BACKGROUND);
 
     drawTodayData(0, 0, unixTime, oneCallData.m_currentData, oneCallData.m_dailyData[0]);
+    drawForcasts(200,0, unixTime, oneCallData);
 
-    drawDailyData(  0, 200, oneCallData.m_dailyData[1]);
-    drawDailyData(100, 200, oneCallData.m_dailyData[2]);
-    drawDailyData(200, 200, oneCallData.m_dailyData[3]);
+    drawDailyData(  0, 210, oneCallData.m_dailyData[1]);
+    drawDailyData(100, 210, oneCallData.m_dailyData[2]);
+    drawDailyData(200, 210, oneCallData.m_dailyData[3]);
 
     // display.drawLine(100, 100, 100, 400, COLOR_FOREGROUND);
     // display.drawLine(200, 100, 200, 400, COLOR_RED);
@@ -99,14 +100,15 @@ void EPaperWeatherDrawer::drawTodayData(int x, int y, UnixTime unixTime, const C
 
   textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
 
-  u8g2Fonts.setCursor(startX + ((display.width()-textWidth)) - 5, startYNext);
+  //u8g2Fonts.setCursor(startX + ((display.width()-textWidth)) - 5, startYNext);//rechts bündig
+  u8g2Fonts.setCursor(startX + 5, startYNext);//links bündig
   u8g2Fonts.print(textOut);
 
 //icon and temp in the middle
 //draw Icon
   //startY += 70;
   startX = 100;
-  startYNext += textHeight;
+  //startYNext += textHeight;
 
   DrawIcon(startX, startYNext, currentData.m_weatherIcon);
 
@@ -136,6 +138,55 @@ void EPaperWeatherDrawer::drawTodayData(int x, int y, UnixTime unixTime, const C
 
   u8g2Fonts.setCursor(startX + ((100-textWidth) / 2), startYNext);
   u8g2Fonts.print(textOut);
+}
+
+void EPaperWeatherDrawer::drawForcasts(int x, int y, UnixTime unixTime, const OneCallData& oneCallData)
+{
+  String textOut;
+  int16_t textWidth, textHeight;
+  int16_t startX = x; 
+  int16_t startYNext = y; 
+
+  u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+  textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+  startYNext += textHeight;
+
+  Serial.println("++++++++++  starty: " + String(textHeight));
+
+  int slotHeight = 50;
+  
+  // u8g2Fonts.setFont(u8g2_font_helvR12_tf);
+  // textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+
+  int timeWidth = u8g2Fonts.getUTF8Width("XX:XX");
+
+  for (int i=0; i < hourlyForeCasts; i++)
+  {
+    DrawIcon_Small(startX + 50, startYNext, oneCallData.m_hourlyData[i].m_icon);
+
+    unixTime.getDateTime(oneCallData.m_hourlyData[i].m_dateTime);
+    // Serial.println(unixTime.hour);
+    u8g2Fonts.setCursor(startX, startYNext);
+    Serial.println("height: " + String(textHeight));
+
+    textOut = String(unixTime.hour) + ":";
+    if (unixTime.minute < 10)
+      textOut += "0";
+    textOut += String(unixTime.minute);
+
+    textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+    u8g2Fonts.setCursor(startX + timeWidth - textWidth, startYNext + textHeight + 10);
+    u8g2Fonts.print(textOut);
+
+    textOut = String(oneCallData.m_hourlyData[i].m_temparature, 0) + "°";
+    textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+    u8g2Fonts.setCursor(startX + timeWidth - textWidth/2, startYNext + 2* textHeight + 10);
+    u8g2Fonts.print(textOut);
+
+    startYNext += slotHeight;
+  }
 }
 
 void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData)
@@ -242,6 +293,46 @@ void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
     DrawFogg(x, y);//50d/n
   }
 
+void EPaperWeatherDrawer::DrawIcon_Small(int x, int y, const String& crIcon)
+{
+  Serial.println("drawing small icon: " + crIcon + " at: " + x + ", " + y);
+
+  if (crIcon == "01d")
+    DrawSun_Small(x, y);//01d;
+  else if (crIcon == "01n")    
+    DrawMoon_Small(x, y);//01n;
+
+  else if (crIcon == "02d")
+    DrawMediumSunWithCloud_Small(x, y);//02d
+  else if (crIcon == "02n")
+    DrawMediumMoonWithCloud_Small(x, y);//02n
+
+  else if (crIcon == "03d")
+    DrawBlackAndWhiteCloudWithSun_Small(x, y);//03d  
+  else if (crIcon == "03n")
+    DrawBlackAndWhiteCloudWithMoon_Small(x, y);//03n
+
+  else if (crIcon == "04d")
+    DrawBlackAndWhiteCloud_Small(x, y);//04d/n
+
+  else if (crIcon == "09d")
+    DrawRain_Small(x, y);//10d  
+
+  else if (crIcon == "10d")
+    DrawMediumSunWithCloudAndRain_Small(x, y);//10d  
+  else if (crIcon == "10n")
+    DrawMediumMoonWithCloudAndRain_Small(x, y);//10n
+
+  else if (crIcon == "11d")
+    DrawThunderstorm_Small(x, y);//11d
+
+  else if (crIcon == "13d")
+    DrawSnow_Small(x, y);//13d
+
+  else if (crIcon == "50d")
+    DrawFogg_Small(x, y);//50d/n
+  }
+
 void EPaperWeatherDrawer::DrawSun(int offsetX, int offsetY) 
 {
   int middleX = 50 + offsetX;  
@@ -310,7 +401,7 @@ void EPaperWeatherDrawer::DrawMoon(int offsetX, int offsetY)
                        45+offsetX-offset-radiusMoon,        45+offsetY-offset+radiusMoon+offset, COLOR_BACKGROUND);
 }
 
-void DrawMoon_Small(int offsetX, int offsetY) {
+void EPaperWeatherDrawer::DrawMoon_Small(int offsetX, int offsetY) {
   offsetX+=1;
 
   offsetX+=22;

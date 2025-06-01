@@ -172,15 +172,15 @@ void OneCallListener::startObject() {
     {
         m_data.m_hourlyCountRaw++;
 
-        //if (m_data.m_hourlyCountRaw % 3 == 0)
-        //{
+        if (m_data.m_hourlyCountRaw > 0 && m_data.m_hourlyCountRaw % 6 == 0)
+        {
             m_data.m_hourlyCount++;
             m_data.m_hourlyReadEnable = true;
-        //}
-        //else
-        //{
-        //    m_data.m_hourlyReadEnable = false;
-        //}
+        }
+        else
+        {
+           m_data.m_hourlyReadEnable = false;
+        }
     }
     else if (m_lastObjectName == "daily")
     {

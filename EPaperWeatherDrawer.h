@@ -26,10 +26,12 @@ class EPaperWeatherDrawer
 
   protected:
     static void drawTodayData(int x, int y, UnixTime unixTime, const CurrentData& currentData, const DailyData& todayData);
+    static void drawForcasts(int x, int y, UnixTime unixTime, const OneCallData& oneCallData);
     static void drawDailyData(int x, int y, const DailyData& dailyData);
 
   private:
     static void DrawIcon(int x, int y, const String& crIcon);
+    static void DrawIcon_Small(int x, int y, const String& crIcon);
 
     static void DrawSun(int x, int y);//01d
     static void DrawSun_Small(int offsetX, int offsetY);//01d
