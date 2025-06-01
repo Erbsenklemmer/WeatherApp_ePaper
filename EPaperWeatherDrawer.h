@@ -1,6 +1,6 @@
 #pragma once
 
-#define ENABLE_GxEPD2_GFX 1
+#define ENABLE_GxEPD2_GFX 0
 #define ENABLE_GxEPD2_display 0
 
 #include "GxEPD2_3C.h"
@@ -32,10 +32,10 @@ class EPaperWeatherDrawer
     static void DrawIcon(int x, int y, const String& crIcon);
 
     static void DrawSun(int x, int y);//01d
-    static void DrawSun_Small(int offsetX, int offsetY);//01d
+    static void DrawSun_Small(int x, int y);//01d
 
     static void DrawMoon(int x, int y);//01n
-    static void DrawMoon_Small(int offsetX, int offsetY);//01n
+    static void DrawMoon_Small(int x, int y);//01n
 
     static void DrawMediumSunWithCloud(int x, int y);//02d
     static void DrawMediumSunWithCloud_Small(int x, int y);//02d
@@ -56,8 +56,8 @@ class EPaperWeatherDrawer
     static void DrawMediumMoonWithCloudAndRain(int x, int y);//09n
     static void DrawMediumMoonWithCloudAndRain_Small(int x, int y);//09n
 
-    static void DrawThunderstorm(int offsetX, int offsetY);//11d
-    static void DrawThunderstorm_Small(int offsetX, int offsetY);//11d
+    static void DrawThunderstorm(int x, int y);//11d
+    static void DrawThunderstorm_Small(int x, int y);//11d
 
     static void DrawRain(int x, int y);//10d
     static void DrawRain_Small(int x, int y);//10d
