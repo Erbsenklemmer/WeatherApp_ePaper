@@ -153,7 +153,7 @@ void EPaperWeatherDrawer::drawForcasts(int x, int y, UnixTime unixTime, const On
 
   Serial.println("++++++++++  starty: " + String(textHeight));
 
-  int slotHeight = 50;
+  int slotHeight = 55;
   
   // u8g2Fonts.setFont(u8g2_font_helvR12_tf);
   // textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
@@ -162,7 +162,7 @@ void EPaperWeatherDrawer::drawForcasts(int x, int y, UnixTime unixTime, const On
 
   for (int i=0; i < hourlyForeCasts; i++)
   {
-    DrawIcon_Small(startX + 50, startYNext, oneCallData.m_hourlyData[i].m_icon);
+    DrawIcon_Small(startX + 55, startYNext+5, oneCallData.m_hourlyData[i].m_icon);
 
     unixTime.getDateTime(oneCallData.m_hourlyData[i].m_dateTime);
     // Serial.println(unixTime.hour);
@@ -182,7 +182,7 @@ void EPaperWeatherDrawer::drawForcasts(int x, int y, UnixTime unixTime, const On
     textOut = String(oneCallData.m_hourlyData[i].m_temparature, 0) + "°";
     textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
 
-    u8g2Fonts.setCursor(startX + timeWidth - textWidth/2, startYNext + 2* textHeight + 10);
+    u8g2Fonts.setCursor(startX + timeWidth - textWidth, startYNext + 2* textHeight + 10);
     u8g2Fonts.print(textOut);
 
     startYNext += slotHeight;
@@ -272,10 +272,10 @@ void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
   else if (crIcon == "03n")
     DrawBlackAndWhiteCloudWithMoon(x, y);//03n
 
-  else if (crIcon == "04d")
+  else if (crIcon == "04d" || crIcon == "04n")
     DrawBlackAndWhiteCloud(x, y);//04d/n
 
-  else if (crIcon == "09d")
+  else if (crIcon == "09d" || crIcon == "09n")
     DrawRain(x, y);//10d  
 
   else if (crIcon == "10d")
@@ -283,15 +283,21 @@ void EPaperWeatherDrawer::DrawIcon(int x, int y, const String& crIcon)
   else if (crIcon == "10n")
     DrawMediumMoonWithCloudAndRain(x, y);//10n
 
-  else if (crIcon == "11d")
+  else if (crIcon == "11d" || crIcon == "11n")
     DrawThunderstorm(x, y);//11d
 
-  else if (crIcon == "13d")
+  else if (crIcon == "13d" || crIcon == "13n")
     DrawSnow(x, y);//13d
 
-  else if (crIcon == "50d")
+  else if (crIcon == "50d" || crIcon == "50n")
     DrawFogg(x, y);//50d/n
+
+  else {
+    u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+    u8g2Fonts.setCursor(x, y);
+    u8g2Fonts.print(crIcon);
   }
+}
 
 void EPaperWeatherDrawer::DrawIcon_Small(int x, int y, const String& crIcon)
 {
@@ -312,10 +318,10 @@ void EPaperWeatherDrawer::DrawIcon_Small(int x, int y, const String& crIcon)
   else if (crIcon == "03n")
     DrawBlackAndWhiteCloudWithMoon_Small(x, y);//03n
 
-  else if (crIcon == "04d")
+  else if (crIcon == "04d" || crIcon == "04n")
     DrawBlackAndWhiteCloud_Small(x, y);//04d/n
 
-  else if (crIcon == "09d")
+  else if (crIcon == "09d" || crIcon == "09n")
     DrawRain_Small(x, y);//10d  
 
   else if (crIcon == "10d")
@@ -323,15 +329,21 @@ void EPaperWeatherDrawer::DrawIcon_Small(int x, int y, const String& crIcon)
   else if (crIcon == "10n")
     DrawMediumMoonWithCloudAndRain_Small(x, y);//10n
 
-  else if (crIcon == "11d")
+  else if (crIcon == "11d" || crIcon == "11n")
     DrawThunderstorm_Small(x, y);//11d
 
-  else if (crIcon == "13d")
+  else if (crIcon == "13d" || crIcon == "13n")
     DrawSnow_Small(x, y);//13d
 
-  else if (crIcon == "50d")
+  else if (crIcon == "50d" || crIcon == "50n")
     DrawFogg_Small(x, y);//50d/n
+  
+  else {
+    u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+    u8g2Fonts.setCursor(x, y);
+    u8g2Fonts.print(crIcon);
   }
+}
 
 void EPaperWeatherDrawer::DrawSun(int offsetX, int offsetY) 
 {
@@ -456,8 +468,8 @@ void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithSun(int offsetX, int offsetY
 }
 void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithSun_Small(int offsetX, int offsetY) 
 {
-  DrawSmallSun_Small(offsetX, offsetY);
-  DrawBlackAndWhiteCloud_Small(offsetX, offsetY+10);
+  DrawSmallSun_Small(offsetX+4, offsetY+9);
+  DrawBlackAndWhiteCloud_Small(offsetX+3, offsetY+17);
 }
 
 void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithMoon(int offsetX, int offsetY) 
@@ -479,8 +491,10 @@ void EPaperWeatherDrawer::DrawBlackAndWhiteCloud(int offsetX, int offsetY)
   DrawWhiteCloud(offsetX+10, offsetY);
   DrawBlackCloud(offsetX   , offsetY+10);
 }
-void EPaperWeatherDrawer::DrawBlackAndWhiteCloud_Small(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawBlackAndWhiteCloud_Small(int offsetX, int offsetY) //04d/n
 {
+  offsetX+=3;
+  offsetY+=10;
   DrawWhiteCloud_Small(offsetX+10, offsetY);
   DrawBlackCloud_Small(offsetX+3 , offsetY+5);
 }
@@ -557,12 +571,15 @@ void EPaperWeatherDrawer::DrawThunderstorm(int offsetX, int offsetY) {
   DrawLine(p6, p7, COLOR_FOREGROUND);
   DrawLine(p7, p1, COLOR_FOREGROUND);
 }
-void EPaperWeatherDrawer::DrawThunderstorm_Small(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawThunderstorm_Small(int offsetX, int offsetY) //11d/n
 {
-  DrawRain_Small(offsetX+2, offsetY);
+  DrawRain_Small(offsetX-2, offsetY-5);
 
-  int x = offsetX+9;
-  int y = offsetY+61;
+  offsetX+=1;
+  offsetY+=20;
+
+  int x = offsetX * 2;//duplicate, will be halfend below
+  int y = offsetY * 2;
 
 //  1 ----------7
 //  /          /
@@ -578,6 +595,8 @@ void EPaperWeatherDrawer::DrawThunderstorm_Small(int offsetX, int offsetY)
   PointData p5((22+x)/2, (55+y)/2);
   PointData p6((40+x)/2, (35+y)/2);
   PointData p7((36+x)/2, (35+y)/2);
+
+  Serial.println("thunder_small p1 x, y: " + String(p1.x) + ", " + String(p1.y));
 
   FillTriangle(p1, p2, p3, COLOR_RED);
   FillTriangle(p3, p1, p7, COLOR_RED);
@@ -611,8 +630,11 @@ void EPaperWeatherDrawer::DrawRain(int offsetX, int offsetY)//10d
       display.drawLine(i+12+offsetX, 57+offsetY, i+15+offsetX, 64+offsetY, COLOR_FOREGROUND);
   }
 } 
-void EPaperWeatherDrawer::DrawRain_Small(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawRain_Small(int offsetX, int offsetY) //09n/d
 {
+  offsetX += 3;
+  offsetY += 10;
+
   DrawWhiteCloud_Small(offsetX+10, offsetY+1);
   DrawBlackCloud_Small(offsetX+ 2, offsetY+9);
 
@@ -653,13 +675,16 @@ void EPaperWeatherDrawer::DrawSnow_Small(int offsetX, int offsetY)
 {
   offsetY+=10;
 
-  DrawBlackAndWhiteCloud_Small(offsetX, offsetY);
+  DrawBlackAndWhiteCloud_Small(offsetX, offsetY-7);
   
-  offsetY+=3;
-  for(int i = 0; i <= 20; i+=6) {
+  offsetX+=6;
+  offsetY+=7;
+
+int flake = 0;
+  for(int i = 0; i <= 20; i+=6, flake++) {
     display.drawCircle(i+8+offsetX, 22+offsetY, 1, COLOR_FOREGROUND);
-    display.drawCircle(i+11+offsetX, 25+offsetY, 1, COLOR_FOREGROUND);
-    // display.drawCircle(i+8+offsetX, 29+offsetY, 1, COLOR_FOREGROUND);
+    if (flake < 3)
+      display.drawCircle(i+11+offsetX, 25+offsetY, 1, COLOR_FOREGROUND);
   }
 }
 
