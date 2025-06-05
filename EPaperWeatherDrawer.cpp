@@ -171,7 +171,13 @@ void EPaperWeatherDrawer::drawForcasts(int x, int y, UnixTime unixTime, const On
 
   for (int i=0; i < hourlyForeCasts; i++)
   {
-    DrawIcon_Small(startX + 55, startYNext+5, oneCallData.m_hourlyData[i].m_icon);
+    // DrawIcon_Small(startX + 55, startYNext+5, oneCallData.m_hourlyData[i].m_icon);
+    if (i == 0)
+      DrawIcon_Small(startX + 55, startYNext+5, "09d");
+    else if (i == 1)
+      DrawIcon_Small(startX + 55, startYNext+5, "10n");
+    else if (i == 2)
+      DrawIcon_Small(startX + 55, startYNext+5, "10d");
 
     unixTime.getDateTime(oneCallData.m_hourlyData[i].m_dateTime);
     // Serial.println(unixTime.hour);
@@ -457,10 +463,10 @@ void EPaperWeatherDrawer::DrawMediumSunWithCloud(int offsetX, int offsetY)
 
   DrawWhiteCloud(12 + offsetX, 40 + offsetY);
 }
-void EPaperWeatherDrawer::DrawMediumSunWithCloud_Small(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawMediumSunWithCloud_Small(int offsetX, int offsetY) //02d
 {
     DrawMediumSun_Small(offsetX+8, offsetY+7);
-    DrawWhiteCloud_Small(offsetX+10, offsetY+24);
+    DrawWhiteCloud_Small(offsetX+10, offsetY+19);
 }
 
 void EPaperWeatherDrawer::DrawMediumMoonWithCloud(int offsetX, int offsetY) 
@@ -469,7 +475,7 @@ void EPaperWeatherDrawer::DrawMediumMoonWithCloud(int offsetX, int offsetY)
   DrawMediumMoon(-10 + offsetX, -10 + offsetY);
   DrawWhiteCloud(12  + offsetX, 37 + offsetY);
 }  
-void EPaperWeatherDrawer::DrawMediumMoonWithCloud_Small(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawMediumMoonWithCloud_Small(int offsetX, int offsetY) //02n
 {
   DrawMediumMoon_Small(offsetX-10, offsetY-11);
   DrawWhiteCloud_Small(offsetX+10, offsetY+19);
@@ -483,10 +489,10 @@ void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithSun(int offsetX, int offsetY
   DrawSmallSun(offsetX+10, offsetY+9);
   DrawBlackAndWhiteCloud(offsetX, offsetY);
 }
-void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithSun_Small(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithSun_Small(int offsetX, int offsetY) //03d
 {
-  DrawSmallSun_Small(offsetX+4, offsetY+9);
-  DrawBlackAndWhiteCloud_Small(offsetX+3, offsetY+17);
+  DrawSmallSun_Small(offsetX+5, offsetY+7);
+  DrawBlackAndWhiteCloud_Small(offsetX-2, offsetY+5);
 }
 
 void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithMoon(int offsetX, int offsetY) 
@@ -495,13 +501,13 @@ void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithMoon(int offsetX, int offset
     DrawSmallMoon(offsetX-15, offsetY-7);
     DrawBlackAndWhiteCloud(offsetX, offsetY+7);
 }
-void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithMoon_Small(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawBlackAndWhiteCloudWithMoon_Small(int offsetX, int offsetY) //03n
 {
     DrawSmallMoon_Small(offsetX-29, offsetY-29);
-    DrawBlackAndWhiteCloud_Small(offsetX+3, offsetY+16);
+    DrawBlackAndWhiteCloud_Small(offsetX-2, offsetY+5);
 }
 
-void EPaperWeatherDrawer::DrawBlackAndWhiteCloud(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawBlackAndWhiteCloud(int offsetX, int offsetY) //04d/n
 {
   offsetX += 7;
   offsetY += 25;
@@ -516,7 +522,7 @@ void EPaperWeatherDrawer::DrawBlackAndWhiteCloud_Small(int offsetX, int offsetY)
   DrawBlackCloud_Small(offsetX+3 , offsetY+5);
 }
 
-void EPaperWeatherDrawer::DrawMediumSunWithCloudAndRain(int offsetX, int offsetY)//09d
+void EPaperWeatherDrawer::DrawMediumSunWithCloudAndRain(int offsetX, int offsetY)//10d
 {
   DrawMediumSunWithCloud(offsetX-3, offsetY-5);
     
@@ -525,16 +531,16 @@ void EPaperWeatherDrawer::DrawMediumSunWithCloudAndRain(int offsetX, int offsetY
     display.drawLine(i+24+offsetX, 70+offsetY, i+27+offsetX, 77+offsetY, COLOR_FOREGROUND);
   }
 }
-void EPaperWeatherDrawer::DrawMediumSunWithCloudAndRain_Small(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawMediumSunWithCloudAndRain_Small(int offsetX, int offsetY) //10d
 {
   DrawMediumSunWithCloud_Small(offsetX, offsetY);
 
   for(int i = 0; i <= 20; i+=4) {
-    display.drawLine(i+16+offsetX, 41+offsetY, i+18+offsetX, 43+offsetY, COLOR_FOREGROUND);
+    display.drawLine(i+15+offsetX, 36+offsetY, i+17+offsetX, 39+offsetY, COLOR_FOREGROUND);
   } 
 }
 
-void EPaperWeatherDrawer::DrawMediumMoonWithCloudAndRain(int offsetX, int offsetY)//09n
+void EPaperWeatherDrawer::DrawMediumMoonWithCloudAndRain(int offsetX, int offsetY)//10n
 {
   DrawMediumMoonWithCloud(offsetX-3, offsetY-5);
     
@@ -543,7 +549,7 @@ void EPaperWeatherDrawer::DrawMediumMoonWithCloudAndRain(int offsetX, int offset
     display.drawLine(i+24+offsetX, 70+offsetY, i+27+offsetX, 77+offsetY, COLOR_FOREGROUND);
   }
 }
-void EPaperWeatherDrawer::DrawMediumMoonWithCloudAndRain_Small(int offsetX, int offsetY) 
+void EPaperWeatherDrawer::DrawMediumMoonWithCloudAndRain_Small(int offsetX, int offsetY) //10n
 {
   DrawMediumMoonWithCloud_Small(offsetX, offsetY);
     
@@ -701,9 +707,9 @@ void EPaperWeatherDrawer::DrawSnow_Small(int offsetX, int offsetY)
 
   int flake = 0;
   for(int i = 0; i <= 20; i+=6, flake++) {
-    display.drawCircle(i+8+offsetX, 22+offsetY, 1, COLOR_FOREGROUND);
+    display.drawCircle(i+7+offsetX, 22+offsetY, 1, COLOR_FOREGROUND);
     if (flake < 3)
-      display.drawCircle(i+11+offsetX, 25+offsetY, 1, COLOR_FOREGROUND);
+      display.drawCircle(i+10+offsetX, 25+offsetY, 1, COLOR_FOREGROUND);
   }
 }
 
