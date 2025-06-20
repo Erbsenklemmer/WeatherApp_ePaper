@@ -27,6 +27,9 @@ class EPaperWeatherDrawer
   protected:
     static void drawTodayData(int x, int y, UnixTime unixTime, const CurrentData& currentData, const DailyData& todayData);
     static void drawForcasts(int x, int y, UnixTime unixTime, const OneCallData& oneCallData);
+
+    static void drawHumidityPressureUVIndex(int x, int y, UnixTime unixTime, const DailyData& dailyData);
+
     static void drawDailyData(int x, int y, const DailyData& dailyData);
 
   private:

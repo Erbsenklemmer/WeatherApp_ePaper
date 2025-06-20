@@ -9,6 +9,8 @@
 #include "EPaperWeatherDrawer.h"
 
 int go=1;
+#define oneSecond 1e6
+uint64_t sleepDuration = 60 * oneSecond;
 
 void setup() 
 {
@@ -98,8 +100,11 @@ void setup()
   //   String(unixTime.day) + "." + unixTime.month/*monthNames[unixTime.month-1]*/ + "." + String(unixTime.year);
   // Serial.println(dateTimeString);
 
-  Serial.println("Waiting");
-  delay(60 * 1000);
+  // Serial.println("Waiting");
+  // delay(60 * 1000);
+
+
+  ESP.deepSleep(sleepDuration);
 }
 
 void loop() 

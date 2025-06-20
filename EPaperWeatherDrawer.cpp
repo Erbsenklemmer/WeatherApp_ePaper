@@ -1,16 +1,6 @@
-
-//#include <Fonts/FreeMono9pt7b.h>
-// #include <Fonts/FreeSans9pt7b.h>
-// #include <Fonts/FreeSans12pt7b.h>
-// #include <Fonts/FreeSans18pt7b.h>
-
-// #include <Fonts/FreeSansBold9pt7b.h>
-// #include <Fonts/FreeSansBold12pt7b.h>
-// #include <Fonts/FreeSansBold18pt7b.h>
-
-//more fonts: D:\Projekte\Arduino\libraries\Adafruit_GFX_Library\Fonts
-
 #include "EPaperWeatherDrawer.h"
+
+#include "windy_arrows_font.c"
 
 GxEPD2_3C<GxEPD2_420c, GxEPD2_420c::HEIGHT> display(GxEPD2_420c(D8, D3, D1, D2));
 //GxEPD2_3C<GxEPD2_420c_Z21, GxEPD2_420c_Z21::HEIGHT> display(GxEPD2_420c_Z21(D8, D3, D1, D2));
@@ -56,6 +46,8 @@ void EPaperWeatherDrawer::drawOneCallData(const OneCallData& oneCallData, UnixTi
 
     drawTodayData(0, 0, unixTime, oneCallData.m_currentData, oneCallData.m_dailyData[0]);
     drawForcasts(200,0, unixTime, oneCallData);
+    
+    drawHumidityPressureUVIndex(0, 0, unixTime, oneCallData.m_dailyData[0]);
 
     drawDailyData(  0, 210, oneCallData.m_dailyData[1]);
     drawDailyData(100, 210, oneCallData.m_dailyData[2]);
@@ -160,7 +152,7 @@ void EPaperWeatherDrawer::drawForcasts(int x, int y, UnixTime unixTime, const On
   textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
   startYNext += textHeight;
 
-  Serial.println("++++++++++  starty: " + String(textHeight));
+//  Serial.println("++++++++++  starty: " + String(textHeight));
 
   int slotHeight = 55;
   
@@ -171,13 +163,13 @@ void EPaperWeatherDrawer::drawForcasts(int x, int y, UnixTime unixTime, const On
 
   for (int i=0; i < hourlyForeCasts; i++)
   {
-    // DrawIcon_Small(startX + 55, startYNext+5, oneCallData.m_hourlyData[i].m_icon);
-    if (i == 0)
-      DrawIcon_Small(startX + 55, startYNext+5, "09d");
-    else if (i == 1)
-      DrawIcon_Small(startX + 55, startYNext+5, "10n");
-    else if (i == 2)
-      DrawIcon_Small(startX + 55, startYNext+5, "10d");
+    DrawIcon_Small(startX + 55, startYNext+5, oneCallData.m_hourlyData[i].m_icon);
+    // if (i == 0)
+    //   DrawIcon_Small(startX + 55, startYNext+5, "09d");
+    // else if (i == 1)
+    //   DrawIcon_Small(startX + 55, startYNext+5, "10n");
+    // else if (i == 2)
+    //   DrawIcon_Small(startX + 55, startYNext+5, "10d");
 
     unixTime.getDateTime(oneCallData.m_hourlyData[i].m_dateTime);
     // Serial.println(unixTime.hour);
@@ -202,6 +194,139 @@ void EPaperWeatherDrawer::drawForcasts(int x, int y, UnixTime unixTime, const On
 
     startYNext += slotHeight;
   }
+}
+
+void EPaperWeatherDrawer::drawHumidityPressureUVIndex(int x, int y, UnixTime unixTime, const DailyData& dailyData)
+{
+  String textOut;
+  int16_t textWidth, textHeight;
+  int16_t startX = x; 
+  int16_t startYNext = y; 
+
+  u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+  textHeight = u8g2Fonts.getFontAscent() - u8g2Fonts.getFontDescent();
+  startYNext += 2*textHeight;
+
+  textOut = "XXXX";// hPa";
+  int textWidthDigits = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+  textHeight += 2;
+
+  // //rain/snow
+  // startYNext += textHeight;
+
+  // textOut = String("Regen: ");
+  // if(dailyData.m_snowMM > 0)
+  //   textOut = String("Schnee: ");
+  // textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+  // u8g2Fonts.setCursor(startX + textWidthDigits - textWidth, startYNext);
+  // u8g2Fonts.print(textOut);
+
+  // u8g2Fonts.setCursor(startX + textWidthDigits, startYNext);
+  // if(dailyData.m_snowMM > 0)
+  //   textOut = String(dailyData.m_snowMM, 0) + " mm";
+  // else if(dailyData.m_rainMM > 0)
+  //   textOut = String(dailyData.m_rainMM, 0) + " mm";
+  // else
+  //   u8g2Fonts.print(" -");
+  
+  //humidity
+  startYNext += textHeight;
+  textOut = String((int)dailyData.m_humidity);
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+  u8g2Fonts.setCursor(startX + textWidthDigits - textWidth, startYNext);
+  u8g2Fonts.print(textOut);
+
+  u8g2Fonts.setCursor(startX + textWidthDigits, startYNext);
+  u8g2Fonts.print(" %");
+
+   //pressure
+  startYNext += textHeight;
+  textOut = String(dailyData.m_pressure);
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+  u8g2Fonts.setCursor(startX + textWidthDigits - textWidth, startYNext);
+  u8g2Fonts.print(textOut);
+
+  u8g2Fonts.setCursor(startX + textWidthDigits, startYNext);
+  u8g2Fonts.print(" hPa");
+
+  //uvi
+  startYNext += textHeight;
+  textOut = "uvi";
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+  u8g2Fonts.setCursor(startX + textWidthDigits - textWidth, startYNext);
+  u8g2Fonts.print(textOut);
+
+  u8g2Fonts.setCursor(startX + textWidthDigits, startYNext);
+  u8g2Fonts.print(" " + String(dailyData.m_uvi, 1));
+
+  //wind
+  startYNext += textHeight;
+  textOut = "wind";
+  textWidth = u8g2Fonts.getUTF8Width(textOut.c_str());
+
+  u8g2Fonts.setCursor(startX + textWidthDigits - textWidth, startYNext);
+  u8g2Fonts.print(textOut);
+
+  u8g2Fonts.setCursor(startX + textWidthDigits, startYNext);
+  u8g2Fonts.print(String(dailyData.m_windSpeed / 3.6, 0));// + "km/h ");
+  
+  u8g2Fonts.setFont(u8g2_font_helvB08_tf);
+  u8g2Fonts.print("km/h");
+
+  //wind direction
+  float help = dailyData.m_windDeg / 45.;
+  int windyIcon = int(help + 0.5);
+  if (windyIcon >= 8)
+    windyIcon -= 8;
+
+  Serial.println("WindSpeed: " + String(dailyData.m_windSpeed) +  ", windyIcon: " + String(windyIcon) + ", deg: " + String(dailyData.m_windDeg));
+
+  u8g2Fonts.setFont(windy_arrows_font);
+  u8g2Fonts.setCursor(u8g2Fonts.getCursorX(), u8g2Fonts.getCursorY() - 4);
+
+  u8g2Fonts.write(windyIcon + 32);
+
+  u8g2Fonts.setCursor(u8g2Fonts.getCursorX(), u8g2Fonts.getCursorY() + 4);
+  u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+
+//sun
+  startYNext += textHeight;
+  u8g2Fonts.setCursor(startX, startYNext);
+
+  textWidth = u8g2Fonts.getUTF8Width(" ");
+  u8g2Fonts.setCursor(startX + textWidth, startYNext);
+
+  u8g2Fonts.setFont(u8g2_font_unifont_t_weather);
+  u8g2Fonts.write(51);//sunny icon
+  u8g2Fonts.setFont(u8g2_font_helvR14_tf);
+
+  int curX = u8g2Fonts.getCursorX();
+  unixTime.getDateTime(dailyData.m_sunRise);
+  u8g2Fonts.print("  " + String(unixTime.hour) + ":" + String(unixTime.minute));
+  
+  startYNext += textHeight;
+  u8g2Fonts.setCursor(curX, startYNext);
+
+  unixTime.getDateTime(dailyData.m_sunSet);
+  u8g2Fonts.print("  " + String(unixTime.hour) + ":" + String(unixTime.minute));
+
+  //moon
+  startYNext += textHeight;
+  u8g2Fonts.setFont(windy_arrows_font);
+
+  Serial.println("moon phase: " + String(dailyData.m_moonPhase, 3));
+  //0 und 1 sind neu mond 
+  //0.25 erstes viertel, 0.5 Vollmond, 0.75 letztes Viertel
+
+  u8g2Fonts.setCursor(startX, startYNext);
+  u8g2Fonts.write(32);
+
+  //sun
 }
 
 void EPaperWeatherDrawer::drawDailyData(int x, int y, const DailyData& dailyData)
