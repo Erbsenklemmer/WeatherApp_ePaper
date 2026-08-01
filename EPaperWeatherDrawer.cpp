@@ -323,8 +323,8 @@ void EPaperWeatherDrawer::drawHumidityPressureUVIndex(int x, int y, UnixTime uni
   //0 und 1 sind neu mond 
   //0.25 erstes viertel, 0.5 Vollmond, 0.75 letztes Viertel
 
-  u8g2Fonts.setCursor(startX, startYNext);
-  u8g2Fonts.write(32);
+  //u8g2Fonts.setCursor(startX, startYNext);
+  //u8g2Fonts.write(32);
 
   //sun
 }
