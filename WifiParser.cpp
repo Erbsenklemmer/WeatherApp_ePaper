@@ -31,6 +31,11 @@ bool WifiParser::setup()
   return true;
 }
 
+bool WifiParser::disconnect()
+{
+  return WiFi.disconnect();
+}
+
 bool WifiParser::parse(JsonStreamingParser* pParser)
 {
   Serial.println("Start parsing...");

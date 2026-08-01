@@ -77,6 +77,8 @@ void setup()
   weatherDataAvailable = WifiParser::parse(&parser);
 #endif //__Test_Paint_DailyData__
 
+  WifiParser::disconnect();
+  
   if (weatherDataAvailable)
   {
     UnixTime unixTime(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);

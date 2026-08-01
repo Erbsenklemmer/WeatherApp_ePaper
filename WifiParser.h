@@ -12,8 +12,8 @@ class WifiParser
 {
 public:
   static bool setup();
-
   static bool parse(JsonStreamingParser* pParser);
+  static bool disconnect();
 
 private:
   bool static httpGETRequest(const char* szRequest, JsonStreamingParser* pParser);
