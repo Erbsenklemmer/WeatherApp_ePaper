@@ -7,6 +7,7 @@
 #include "OneCallListener.h"
 
 #include "EPaperWeatherDrawer.h"
+#include "EPaperWeatherDrawer2.h"
 
 int go=1;
 #define oneSecond 1e6
@@ -22,7 +23,8 @@ void setup()
 
   WifiParser::setup();
 
-  EPaperWeatherDrawer::setup();
+  //EPaperWeatherDrawer::setup();
+  EPaperWeatherDrawer2::setup();
 
 //   Serial.println("setup - done");
 // }
@@ -82,7 +84,8 @@ void setup()
   if (weatherDataAvailable)
   {
     UnixTime unixTime(oneCallListener.m_data.m_timezone_offset_in_half_hours / 2);
-    EPaperWeatherDrawer::drawOneCallData(oneCallListener.m_data, unixTime);
+    //EPaperWeatherDrawer::drawOneCallData(oneCallListener.m_data, unixTime);
+    EPaperWeatherDrawer2::drawOneCallData(oneCallListener.m_data, unixTime);
   }
   else
   {

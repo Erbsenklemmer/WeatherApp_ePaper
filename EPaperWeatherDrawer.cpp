@@ -1,4 +1,5 @@
 #include "EPaperWeatherDrawer.h"
+#ifdef ENABLE_OLD_WEATHERDRAWER
 
 #include "windy_arrows_font.c"
 
@@ -1096,3 +1097,5 @@ void EPaperWeatherDrawer::DrawPolarRay(int middleX, int middleY, int length, int
 
   display.drawLine(middleX + dX, middleY + dY, middleX - dX, middleY - dY, COLOR_FOREGROUND);
 }
+
+#endif // ENABLE_OLD_WEATHERDRAWER

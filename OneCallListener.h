@@ -27,7 +27,7 @@ class OneCallListener: public JsonListener {
     void PushObjectName(const String& name);
     const String PopObjectName();
 
-    const int16_t CalcDayOfWeek(int unixTimeRaw);
+    int CalcDayOfWeek(int unixTimeRaw) const;
 
     OneCallData m_data;
 
@@ -41,8 +41,8 @@ private:
     String m_stackObjectName[m_stackSize];
     void DumpStackObjectName();
 
-    unsigned char m_objectDepth;
-    unsigned char m_arrayDepth;
+    int m_objectDepth;
+    int m_arrayDepth;
 
     String addIndent;
     String strIndent;

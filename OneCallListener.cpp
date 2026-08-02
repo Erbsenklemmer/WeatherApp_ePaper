@@ -282,10 +282,10 @@ void OneCallListener::DumpStackObjectName() {
     //Serial.println("");
 }
 
-const int16_t OneCallListener::CalcDayOfWeek(int unixTimeRaw)
+int OneCallListener::CalcDayOfWeek(int unixTimeRaw) const
 {
   int unixTime = unixTimeRaw + (m_data.m_timezone_offset_in_half_hours * 1800);
-  int16_t dayOfWeek = (int(unixTime / 86400.0) + 4) % 7;
+  int dayOfWeek = (int(unixTime / 86400.0) + 4) % 7;
   return dayOfWeek;
 }
 

@@ -3,6 +3,9 @@
 #define ENABLE_GxEPD2_GFX 1
 #define ENABLE_GxEPD2_display 0
 
+//#define ENABLE_OLD_WATHERDRAWER
+#ifdef ENABLE_OLD_WEATHERDRAWER
+
 #include "GxEPD2_3C.h"
 #include <U8g2_for_Adafruit_GFX.h>
 
@@ -92,3 +95,4 @@ class EPaperWeatherDrawer
     static void DrawLine(PointData p1, PointData p2, uint16_t color);
     static void FillTriangle(PointData p1, PointData p2, PointData p3, uint16_t color);
 };
+#endif
